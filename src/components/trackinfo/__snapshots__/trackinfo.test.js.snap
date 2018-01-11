@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<TrackInfo /> Snapshot should render without crashing. 1`] = `
+<aside
+  className="track-info"
+>
+  <nav
+    className="level is-mobile"
+  />
+</aside>
+`;
