@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<TrackProgress /> Snapshot should render without crashing. 1`] = `
+<div
+  className="loading-bar"
+  style={
+    Object {
+      "width": undefined,
+    }
+  }
+/>
+`;
