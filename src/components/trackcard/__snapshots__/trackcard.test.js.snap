@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<TrackCard /> Snapshot should render without crashing. 1`] = `
+<article
+  className="section-list_item"
+  onClick={[Function]}
+>
+  <figure
+    className="track-image"
+  >
+    <img />
+    <figcaption>
+      <h2 />
+      <span />
+    </figcaption>
+  </figure>
+</article>
+`;
