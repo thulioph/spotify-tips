@@ -1,7 +1,9 @@
 import React from 'react';
+import SpotifyWrapper from 'spotify-wrapper';
 
 import TrackCard from '../../components/trackcard';
 import TrackInfo from '../../components/trackinfo';
+import TrackProgress from '../../components/trackprogress';
 
 // ====
 
@@ -10,58 +12,112 @@ class Home extends React.Component {
         super(props);
 
         this.state = {
-            tracks: [
-                {
-                    id: '6HlvqG97GN8m6Hd1DaMCSu',
-                    preview_url: 'https://p.scdn.co/mp3-preview/79d822939de7dda0f639230f8dbe6d7262e74582',
-                    image: 'https://i.scdn.co/image/0c86e9a48a303bbe940ad919553da5ec9e4d4ff9',
-                    name: 'O Aprendiz',
-                    artist: {
-                        name: 'Diomedes Chinaski'
-                    }
-                },
-
-                {
-                    id: '6HlvqG97GN8m6Hd1DaMCSs',
-                    preview_url: 'https://p.scdn.co/mp3-preview/79d822939de7dda0f639230f8dbe6d7262e74582',
-                    image: 'https://i.scdn.co/image/0c86e9a48a303bbe940ad919553da5ec9e4d4ff9',
-                    name: 'O Aprendiz',
-                    artist: {
-                        name: 'Diomedes Chinaski'
-                    }
-                },
-
-                {
-                    id: '6HlvqG97GN8m6Hd1DaMCS1',
-                    preview_url: 'https://p.scdn.co/mp3-preview/79d822939de7dda0f639230f8dbe6d7262e74582',
-                    image: 'https://i.scdn.co/image/0c86e9a48a303bbe940ad919553da5ec9e4d4ff9',
-                    name: 'O Aprendiz',
-                    artist: {
-                        name: 'Diomedes Chinaski'
-                    }
-                }
-            ],
-
-            trackInfo: [
-                { legend: 'danceability', value: '20%', title: 'Se a música é dançante' },
-                { legend: 'danceability', value: '20%', title: 'Se a música é dançante' },
-                { legend: 'danceability', value: '20%', title: 'Se a música é dançante' },
-            ],
-
+            tracks: [],
+            trackInfo: [],
             displayInfo: false,
+            currentPreview: '',
+            currentTime: '',
         };
-    }
 
-    handleTrackCardClicked(trackID, previewUrl) {
-        console.warn(trackID, previewUrl);
-
-        this.setState({
-            displayInfo: !this.state.displayInfo
+        this.spotify = new SpotifyWrapper({
+            token: 'BQAzSlXTk-In7SRnGg4fZqiyYcj_mXOH2Hnqrj3qd9gQqfOY9_KE-SDOJic03Xgk2fMa66_dAlf-Mcp4UyvGPHsMhsSY7xAW36gnhL2kCaY59mYviAfTdif0p2n9zPFV3W5dW-r6obtLtQ0cR1Vxc_I'
         });
     }
 
+    componentDidMount() {
+        const topTracks = this.spotify.user.topTracks();
+        topTracks.then(track => this.setState({ tracks: track.items }));
+    }
+
+    handleTrackFeatures(obj) {
+        let arr = [];
+
+        Object.keys(obj).forEach(el => {
+            if (el === 'danceability') {
+                arr.push({
+                    legend: [el],
+                    value: `${Math.round(obj[el] * 100)}%`,
+                    title: 'Se a música é dançante' // mais próximo de 1.0 é dançante
+                });
+            }
+
+            if (el === 'energy') {
+                arr.push({
+                    legend: [el],
+                    value: `${Math.round(obj[el] * 100)}%`,
+                    title: 'Se a música é energética' // mais próximo de 1.0 é enérgica
+                });
+            }
+
+            if (el === 'mode') {
+                arr.push({
+                    legend: [el],
+                    value: `${Math.round(obj[el] * 100)}%`,
+                    title: 'Se a música é melódica' // mais próximo de 1.0 é melódica
+                });
+            }
+
+            if (el === 'speechiness') {
+                arr.push({
+                    legend: [el],
+                    value: `${Math.round(obj[el] * 100)}%`,
+                    title: 'Se a música tem palavras faladas' // mais próximo de 1.0 tem
+                });
+            }
+
+            if (el === 'liveness') {
+                arr.push({
+                    legend: [el],
+                    value: `${Math.round(obj[el] * 100)}%`,
+                    title: 'Se a música é ao vivo' // acima de 0.8 é ao vivo
+                });
+            }
+
+            if (el === 'valence') {
+                arr.push({
+                    legend: [el],
+                    value: `${Math.round(obj[el] * 100)}%`,
+                    title: 'Se a música tem uma vibe positiva' // mais próximo de 1.0 é positiva (feliz, eufórica)
+                });
+            }
+        });
+
+        this.setState({ trackInfo: arr });
+    }
+
+    displayTrackInformation(trackID) {
+        const trackFeatures = this.spotify.audio.features(trackID);
+
+        trackFeatures.then(data => {
+            this.handleTrackFeatures(data);
+
+            this.setState({ displayInfo: true });
+        });
+
+        setTimeout(() => this.setState({ displayInfo: false }), 30001);
+    }
+
+    displayTrackAudio(previewUrl) {
+        let audio = new Audio(previewUrl);
+        audio.play();
+
+        audio.addEventListener('timeupdate', (e) => {
+            const currentTime = Math.floor(e.target.currentTime);
+            const duration = Math.floor(e.target.duration);
+
+            this.setState({
+                currentTime: `${(100 - (duration - currentTime))}%`
+            });
+        });
+    }
+
+    handleTrackCardClicked(trackID, previewUrl) {
+        this.displayTrackInformation(trackID);
+        this.displayTrackAudio(previewUrl);
+    }
+
     render() {
-        const { tracks, trackInfo, displayInfo } = this.state;
+        const { tracks, trackInfo, displayInfo, currentPreview, currentTime } = this.state;
 
         return(
             <main className="container">
@@ -71,14 +127,14 @@ class Home extends React.Component {
 
                 <section className="section">
                     <ul className="section-list">
-                        {tracks.map(el => (
+                        {tracks && tracks.length && tracks.map(el => (
                             <TrackCard 
                                 key={el.id}
                                 trackId={el.id}
                                 previewUrl={el.preview_url}
-                                trackImage={el.image}
+                                trackImage={el.album.images[0].url}
                                 trackName={el.name}
-                                artistName={el.artist.name}
+                                artistName={el.artists[0].name}
                                 displayInfo={this.handleTrackCardClicked.bind(this)}
                             />
                         ))}
@@ -88,8 +144,10 @@ class Home extends React.Component {
                 <section className="section">
                     <TrackInfo infoList={trackInfo} isVisible={displayInfo} />
                 </section>
-                
-                <section className="section"></section>
+
+                <section className="section track-progress">
+                    <TrackProgress preview={currentPreview} time={currentTime} />
+                </section>
             </main>
         )
     }
