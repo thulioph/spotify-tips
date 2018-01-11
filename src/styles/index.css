@@ -197,3 +197,10 @@ img {
     animation: octocat-wave 560ms ease-in-out
   }
 }
+
+.track-progress {
+  z-index: 20;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
