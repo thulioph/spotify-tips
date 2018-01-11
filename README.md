@@ -1,6 +1,6 @@
 # Spotify Tips
 
-[![Build Status](https://travis-ci.org/thulioph/spotify-tips.svg?branch=tests)](https://travis-ci.org/thulioph/spotify-tips) [![Coverage Status](https://coveralls.io/repos/github/thulioph/spotify-tips/badge.svg?branch=tests)](https://coveralls.io/github/thulioph/spotify-tips?branch=tests)
+[![Build Status](https://travis-ci.org/thulioph/spotify-tips.svg?branch=tests)](https://travis-ci.org/thulioph/spotify-tips) [![Coverage Status](https://coveralls.io/repos/github/thulioph/spotify-tips/badge.svg?branch=master)](https://coveralls.io/github/thulioph/spotify-tips?branch=master)
 
 Demo: [https://spotify.thulioph.com](https://spotify.thulioph.com)
 
