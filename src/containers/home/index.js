@@ -148,35 +148,37 @@ class Home extends React.Component {
         }
 
         return(
-            <main className={containerClass}>
-                <section className="section">
-                    <h1 className="title">Home</h1>
-                </section>
+            <div>
+                <main className={containerClass}>
+                    <section className="section">
+                        <h1 className="title">Home</h1>
+                    </section>
 
-                <section className="section">
-                    <ul className="section-list">
-                        {tracks && tracks.length && tracks.map(el => (
-                            <TrackCard 
-                                key={el.id}
-                                trackId={el.id}
-                                previewUrl={el.preview_url}
-                                trackImage={el.album.images[0].url}
-                                trackName={el.name}
-                                artistName={el.artists[0].name}
-                                displayInfo={this.handleTrackCardClicked.bind(this)}
-                            />
-                        ))}
-                    </ul>
-                </section>
+                    <section className="section">
+                        <ul className="section-list">
+                            {tracks && tracks.length && tracks.map(el => (
+                                <TrackCard 
+                                    key={el.id}
+                                    trackId={el.id}
+                                    previewUrl={el.preview_url}
+                                    trackImage={el.album.images[0].url}
+                                    trackName={el.name}
+                                    artistName={el.artists[0].name}
+                                    displayInfo={this.handleTrackCardClicked.bind(this)}
+                                />
+                            ))}
+                        </ul>
+                    </section>
 
-                <section className="section">
-                    <TrackInfo infoList={trackInfo} isVisible={displayInfo} />
-                </section>
+                    <section className="section">
+                        <TrackInfo infoList={trackInfo} isVisible={displayInfo} />
+                    </section>
+                </main>
 
-                <section className="section track-progress">
+                <section className="track-progress">
                     <TrackProgress preview={currentPreview} time={currentTime} />
                 </section>
-            </main>
+            </div>
         )
     }
 };
