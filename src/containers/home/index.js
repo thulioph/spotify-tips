@@ -20,8 +20,10 @@ class Home extends React.Component {
         };
 
         this.spotify = new SpotifyWrapper({
-            token: 'BQAzSlXTk-In7SRnGg4fZqiyYcj_mXOH2Hnqrj3qd9gQqfOY9_KE-SDOJic03Xgk2fMa66_dAlf-Mcp4UyvGPHsMhsSY7xAW36gnhL2kCaY59mYviAfTdif0p2n9zPFV3W5dW-r6obtLtQ0cR1Vxc_I'
+            token: 'BQC8RENz0YriU84E24SiOGxSt8D0A_cy21sz_F5XJNTQwC7QYvgWHdOaRM1TN1SSTDGJdVYRgmwkFQ9zGj9ovCaissT5Zq44aE5vS05XGYlaeWJA443XqdgLwiswTR6dtsTZzODQwtEaUNkYWufif7A'
         });
+
+        this.audio = null;
     }
 
     componentDidMount() {
@@ -98,23 +100,24 @@ class Home extends React.Component {
     }
 
     displayTrackAudio(element, previewUrl) {
-        let audio = new Audio(previewUrl);
+        if (this.audio) {
+            this.audio.pause();
+        }
 
-        audio.play();
+        this.audio = new Audio(previewUrl);
+        this.audio.play();
 
-        audio.addEventListener('timeupdate', (e) => {
+        this.audio.addEventListener('timeupdate', (e) => {
             const currentTime = Math.floor(e.target.currentTime);
             const duration = Math.floor(e.target.duration);
 
-            this.setState({
-                currentTime: `${(100 - (duration - currentTime))}%`
-            });
+            this.setState({ currentTime: `${(100 - (duration - currentTime))}%` });
         });
 
-        audio.addEventListener('ended', (e) => {
+        this.audio.addEventListener('ended', (e) => {
             element.classList.remove('js-active');
-
             this.setState({ currentTime: '0%' });
+            this.audio = null;
         });
     }
 
@@ -145,35 +148,37 @@ class Home extends React.Component {
         }
 
         return(
-            <main className={containerClass}>
-                <section className="section">
-                    <h1 className="title">Home</h1>
-                </section>
+            <div>
+                <main className={containerClass}>
+                    <section className="section">
+                        <h1 className="title">Home</h1>
+                    </section>
 
-                <section className="section">
-                    <ul className="section-list">
-                        {tracks && tracks.length && tracks.map(el => (
-                            <TrackCard 
-                                key={el.id}
-                                trackId={el.id}
-                                previewUrl={el.preview_url}
-                                trackImage={el.album.images[0].url}
-                                trackName={el.name}
-                                artistName={el.artists[0].name}
-                                displayInfo={this.handleTrackCardClicked.bind(this)}
-                            />
-                        ))}
-                    </ul>
-                </section>
+                    <section className="section">
+                        <ul className="section-list">
+                            {tracks && tracks.length && tracks.map(el => (
+                                <TrackCard 
+                                    key={el.id}
+                                    trackId={el.id}
+                                    previewUrl={el.preview_url}
+                                    trackImage={el.album.images[0].url}
+                                    trackName={el.name}
+                                    artistName={el.artists[0].name}
+                                    displayInfo={this.handleTrackCardClicked.bind(this)}
+                                />
+                            ))}
+                        </ul>
+                    </section>
 
-                <section className="section">
-                    <TrackInfo infoList={trackInfo} isVisible={displayInfo} />
-                </section>
+                    <section className="section">
+                        <TrackInfo infoList={trackInfo} isVisible={displayInfo} />
+                    </section>
+                </main>
 
-                <section className="section track-progress">
+                <section className="track-progress">
                     <TrackProgress preview={currentPreview} time={currentTime} />
                 </section>
-            </main>
+            </div>
         )
     }
 };
