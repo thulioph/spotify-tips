@@ -1,6 +1,7 @@
 import React from 'react';
 import SpotifyWrapper from 'spotify-wrapper';
 
+import BarGraph from '../../components/bargraph';
 import TrackCard from '../../components/trackcard';
 import TrackInfo from '../../components/trackinfo';
 import TrackProgress from '../../components/trackprogress';
@@ -17,6 +18,7 @@ class Home extends React.Component {
             displayInfo: false,
             currentPreview: '',
             currentTime: '',
+            barGraphData: {},
         };
 
         this.spotify = new SpotifyWrapper({
@@ -87,11 +89,18 @@ class Home extends React.Component {
         this.setState({ trackInfo: arr });
     }
 
+    handleTrackFeaturesGraphic(obj) {
+        this.setState({
+            barGraphData: obj
+        });
+    }
+
     displayTrackInformation(trackID) {
         const trackFeatures = this.spotify.audio.features(trackID);
 
         trackFeatures.then(data => {
             this.handleTrackFeatures(data);
+            this.handleTrackFeaturesGraphic(data);
 
             this.setState({ displayInfo: true });
         });
@@ -138,7 +147,7 @@ class Home extends React.Component {
     }
 
     render() {
-        const { tracks, trackInfo, displayInfo, currentPreview, currentTime } = this.state;
+        const { tracks, trackInfo, displayInfo, currentPreview, currentTime, barGraphData } = this.state;
 
         let cTimer = currentTime.replace('%', '');
         let containerClass = `container`;
@@ -172,6 +181,10 @@ class Home extends React.Component {
 
                     <section className="section">
                         <TrackInfo infoList={trackInfo} isVisible={displayInfo} />
+                    </section>
+
+                    <section className="section">
+                        <BarGraph data={barGraphData} />
                     </section>
                 </main>
 
