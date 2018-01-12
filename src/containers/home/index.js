@@ -97,8 +97,9 @@ class Home extends React.Component {
         setTimeout(() => this.setState({ displayInfo: false }), 30001);
     }
 
-    displayTrackAudio(previewUrl) {
+    displayTrackAudio(element, previewUrl) {
         let audio = new Audio(previewUrl);
+
         audio.play();
 
         audio.addEventListener('timeupdate', (e) => {
@@ -109,18 +110,42 @@ class Home extends React.Component {
                 currentTime: `${(100 - (duration - currentTime))}%`
             });
         });
+
+        audio.addEventListener('ended', (e) => {
+            element.classList.remove('js-active');
+
+            this.setState({ currentTime: '0%' });
+        });
     }
 
-    handleTrackCardClicked(trackID, previewUrl) {
+    setTrackAsActive(element) {
+        const tracks = document.querySelectorAll('.section-list_item');
+        tracks.forEach(el => el.classList.remove('js-active'));
+
+        element.classList.add('js-active');
+    }
+
+    handleTrackCardClicked(evt, trackID, previewUrl) {
+        const { currentTarget } = evt;
+
+        this.setTrackAsActive(currentTarget);
+
         this.displayTrackInformation(trackID);
-        this.displayTrackAudio(previewUrl);
+        this.displayTrackAudio(currentTarget, previewUrl);
     }
 
     render() {
         const { tracks, trackInfo, displayInfo, currentPreview, currentTime } = this.state;
 
+        let cTimer = currentTime.replace('%', '');
+        let containerClass = `container`;
+
+        if (cTimer > 0) {
+            containerClass = `container js-active`;
+        }
+
         return(
-            <main className="container">
+            <main className={containerClass}>
                 <section className="section">
                     <h1 className="title">Home</h1>
                 </section>
