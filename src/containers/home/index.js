@@ -29,6 +29,39 @@ class Home extends React.Component {
     componentDidMount() {
         const topTracks = this.spotify.user.topTracks();
         topTracks.then(track => this.setState({ tracks: track.items }));
+
+        // atualizar a biblioteca para ter esse método
+        this.getUserInfo();
+    }
+
+    getUserInfo() {
+        const requestMethod = (url, options) => {
+            const access_token = localStorage.getItem('st_access_token');
+
+            return fetch(url, Object.assign({
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${access_token}`
+                }
+            }, options));
+        };
+
+        const request = requestMethod('https://api.spotify.com/v1/me');
+
+        request.then((response) => {
+            if (!response.ok) {
+                console.error({
+                    code: response.status,
+                    error: response.statusText
+                });
+            }
+
+            response.json().then((json) => {
+                console.warn('meu dado tá aqui:', json);
+            });
+        }, (error) => {
+            console.error({ code: null, error: error.message })
+        });
     }
 
     handleTrackFeatures(obj) {
