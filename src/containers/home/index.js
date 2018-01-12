@@ -20,7 +20,7 @@ class Home extends React.Component {
         };
 
         this.spotify = new SpotifyWrapper({
-            token: 'BQC8RENz0YriU84E24SiOGxSt8D0A_cy21sz_F5XJNTQwC7QYvgWHdOaRM1TN1SSTDGJdVYRgmwkFQ9zGj9ovCaissT5Zq44aE5vS05XGYlaeWJA443XqdgLwiswTR6dtsTZzODQwtEaUNkYWufif7A'
+            token: localStorage.getItem('st_access_token')
         });
 
         this.audio = null;
