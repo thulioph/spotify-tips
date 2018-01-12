@@ -7,7 +7,7 @@ const TrackCard = (props) => {
     const { trackId, previewUrl, trackImage, trackName, artistName, displayInfo } = props;
 
     return (
-        <article className='section-list_item' onClick={() => displayInfo(trackId, previewUrl)}>
+        <article className='section-list_item' onClick={(evt) => displayInfo(evt, trackId, previewUrl)}>
             <figure className='track-image'>
                 <img src={trackImage} alt={trackName} />
 
