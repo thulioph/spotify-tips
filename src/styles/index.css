@@ -204,3 +204,9 @@ img {
   bottom: 0;
   width: 100%;
 }
+
+/* Graph  */
+.bar { 
+  fill: steelblue;
+  cursor: pointer;
+}
