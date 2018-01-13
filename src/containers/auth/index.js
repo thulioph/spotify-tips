@@ -1,12 +1,20 @@
 import React from 'react';
 import { Redirect } from 'react-router';
 
+import Storage from '../../utils/Storage';
+
 // ====
 
 class Auth extends React.Component {
-    state = {
-        isOk: false
-    };
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            isOk: false
+        };
+
+        this.storage = new Storage('spotify_tips');
+    }
 
     // ver a melhor maneira de obter esse valor
     _getHashParams(key) {
@@ -15,9 +23,6 @@ class Auth extends React.Component {
     }
 
     componentWillMount() {
-        console.warn('didmount boy');
-        // debugger;
-
         const access_token = this._getHashParams('access_token');
 
         if (access_token) {
@@ -26,10 +31,7 @@ class Auth extends React.Component {
                 expires_in: this._getHashParams('expires_in')
             };
 
-            localStorage.setItem('st_access_token', params.access_token);
-            localStorage.setItem('st_auth_params', JSON.stringify(params));
-            // seconds to ms
-            localStorage.setItem('st_access_token_expiration_time', new Date().getTime() + (parseInt(params.expires_in, 10) * 1000));
+            this.storage.save(params);
 
             this.setState({ isOk: true });
         } else {
@@ -40,8 +42,8 @@ class Auth extends React.Component {
     render() {
         const { isOk } = this.state;
         
-        return(
-            isOk ? <Redirect to="/login"></Redirect> : null
+        return( 
+            isOk && <Redirect to='/login' /> 
         )
     }
 };
