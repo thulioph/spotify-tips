@@ -6,6 +6,8 @@ import TrackCard from '../../components/trackcard';
 import TrackInfo from '../../components/trackinfo';
 import TrackProgress from '../../components/trackprogress';
 
+import Storage from '../../utils/Storage';
+
 // ====
 
 class Home extends React.Component {
@@ -21,8 +23,10 @@ class Home extends React.Component {
             userProfile: {},
         };
 
+        this.storage = new Storage('spotify_tips');
+
         this.spotify = new SpotifyWrapper({
-            token: localStorage.getItem('st_access_token')
+            token: this.storage.get().access_token
         });
 
         this.audio = null;
@@ -181,9 +185,10 @@ class Home extends React.Component {
     render() {
         const { tracks, trackInfo, displayInfo, currentPreview, currentTime, userProfile } = this.state;
 
-        const access_token = localStorage.getItem('st_access_token');
+        const access_token = this.storage.get().access_token;
 
         if (!access_token) {
+            debugger;
             return( <Redirect to='/login' /> );
         }
 
