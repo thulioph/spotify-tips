@@ -2,6 +2,7 @@ import React from 'react';
 import { Redirect } from 'react-router';
 
 import Storage from '../../utils/Storage';
+import { randomString } from '../../utils';
 
 // ====
 
@@ -20,9 +21,6 @@ class Login extends React.Component {
         };
 
         this.storage = new Storage('spotify_tips');
-
-        this.requestLogin = this.requestLogin.bind(this);
-        this._generateRandomString = this._generateRandomString.bind(this);
     }
 
     componentDidMount() {
@@ -35,21 +33,13 @@ class Login extends React.Component {
         }
     }
 
-    _generateRandomString(length) {
-        let text = '';
-        const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-
-        for (let i = 0; i < length; i++) {
-            text += possible.charAt(Math.floor(Math.random() * possible.length));
-        }
-
-        return text;
-    }
-
     requestLogin() {
-        const state = this._generateRandomString(16);
+        const client_id = encodeURIComponent(this.config.client_id);
+        const scope = encodeURIComponent(this.config.scope);
+        const redirect_uri = encodeURIComponent(this.config.redirect_uri);
+        const state = encodeURIComponent(randomString(8));
 
-        const url = `https://accounts.spotify.com/authorize?response_type=token&client_id=${encodeURIComponent(this.config.client_id)}&scope=${encodeURIComponent(this.config.scope)}&redirect_uri=${encodeURIComponent(this.config.redirect_uri)}&state=${encodeURIComponent(state)}`;
+        const url = `https://accounts.spotify.com/authorize?response_type=token&client_id=${client_id}&scope=${scope}&redirect_uri=${redirect_uri}&state=${state}`;
 
         window.location = url;
     }
@@ -62,10 +52,14 @@ class Login extends React.Component {
         }
 
         return (
-            <div>
-                <h1 className="title">Login</h1>
-                <button onClick={this.requestLogin}>Login</button>
-            </div>
+            <section className="section">
+                <div className="container">
+                    <h1 className="title">Login</h1>
+                    <button onClick={this.requestLogin.bind(this)} className="button is-dark">
+                        Login
+                    </button>
+                </div>
+            </section>
         )
     }
 };
