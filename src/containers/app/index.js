@@ -9,15 +9,23 @@ import Logout from '../logout';
 
 import Octocat from '../../components/octocat';
 
+import Storage from '../../utils/Storage';
+
 // ====
 
 class App extends React.Component {
-  state = {
-    hasToken: false
-  };
+  constructor(props) {
+    super(props);
 
-  componentDidMount() {
-    const access_token = localStorage.getItem('st_access_token');
+    this.state = {
+      hasToken: false
+    };
+
+    this.storage = new Storage('spotify_tips');
+  }
+
+  componentWillMount() {
+    const access_token = this.storage.get();
 
     if (access_token) {
       this.setState({ hasToken: true });
@@ -58,7 +66,7 @@ class App extends React.Component {
             </ul>
           </nav>
 
-          <Route path='/home' component={() => hasToken ? <Home /> : null} />
+          <Route path='/home' component={Home}/>
           <Route path='/login' component={Login} />
           <Route path='/auth' component={Auth} />
           <Route path='/logout' component={Logout} />
