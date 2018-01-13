@@ -37,20 +37,17 @@ class App extends React.Component {
   render() {
     const { hasToken } = this.state;
     
-    let logout_link;
     let home_link;
-    let login_link;
+    let logout_link;
     
     if (hasToken) {
-      logout_link = <li className="navbar-item"><Link to='/logout'>Logout</Link></li>
       home_link = <li className="navbar-item"><Link to='/home'>Home</Link></li>
-    } else {
-      login_link = <li className="navbar-item"><Link to='/login'>Login</Link></li>
+      logout_link = <li className="navbar-item"><Link to='/logout'>Logout</Link></li>
     }
 
     return(
       <Router>
-        <div>
+        <main>
           {!hasToken && <Redirect to='/login' /> } 
           
           <Octocat 
@@ -58,19 +55,22 @@ class App extends React.Component {
             title="Fork me on Github" 
           />
 
-          <nav className="navbar">
-            <ul className="navbar-menu">
-              {login_link}
-              {home_link}
-              {logout_link}
-            </ul>
-          </nav>
+          {
+            hasToken ? 
+              <nav className="navbar">
+                <ul className="navbar-menu">
+                  {home_link}
+                  {logout_link}
+                </ul>
+              </nav>
+            : null
+          }
 
           <Route path='/home' component={Home}/>
           <Route path='/login' component={Login} />
           <Route path='/auth' component={Auth} />
           <Route path='/logout' component={Logout} />
-        </div>
+        </main>
       </Router>
     )
   }
