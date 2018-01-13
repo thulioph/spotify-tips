@@ -188,7 +188,6 @@ class Home extends React.Component {
         const access_token = this.storage.get().access_token;
 
         if (!access_token) {
-            debugger;
             return( <Redirect to='/login' /> );
         }
 
