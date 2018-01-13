@@ -1,4 +1,5 @@
 import React from 'react';
+import { Redirect } from 'react-router';
 import SpotifyWrapper from 'spotify-wrapper';
 
 import TrackCard from '../../components/trackcard';
@@ -17,6 +18,7 @@ class Home extends React.Component {
             displayInfo: false,
             currentPreview: '',
             currentTime: '',
+            userProfile: {},
         };
 
         this.spotify = new SpotifyWrapper({
@@ -58,6 +60,12 @@ class Home extends React.Component {
 
             response.json().then((json) => {
                 console.warn('meu dado tá aqui:', json);
+                
+                this.setState((prevState) => {
+                    return { 
+                        userProfile: Object.assign(prevState, json)
+                    };
+                })
             });
         }, (error) => {
             console.error({ code: null, error: error.message })
@@ -171,7 +179,13 @@ class Home extends React.Component {
     }
 
     render() {
-        const { tracks, trackInfo, displayInfo, currentPreview, currentTime } = this.state;
+        const { tracks, trackInfo, displayInfo, currentPreview, currentTime, userProfile } = this.state;
+
+        const access_token = localStorage.getItem('st_access_token');
+
+        if (!access_token) {
+            return( <Redirect to='/login' /> );
+        }
 
         let cTimer = currentTime.replace('%', '');
         let containerClass = `container`;
@@ -184,7 +198,12 @@ class Home extends React.Component {
             <div>
                 <main className={containerClass}>
                     <section className="section">
-                        <h1 className="title">Home</h1>
+                        <div className="container">
+                            <h1 className="title">Home</h1>
+                            <h2 className="subtitle">
+                                Olá <strong>{userProfile.display_name}</strong>, essas são as <strong>20 músicas</strong> que você mais ouviu.
+                            </h2>
+                        </div>
                     </section>
 
                     <section className="section">
