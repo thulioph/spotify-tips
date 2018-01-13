@@ -18,7 +18,7 @@
     "react-test-renderer": "^16.2.0",
     "sinon": "^4.1.4",
     "sinon-chai": "^2.14.0",
-    "spotify-wrapper": "git+https://git@github.com/thulioph/spotify-wrapper.git"
+    "spotify-wrapper": "git+https://github.com/thulioph/spotify-wrapper.git"
   },
   "scripts": {
     "start": "react-scripts start",
