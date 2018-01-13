@@ -1,6 +1,8 @@
 import React from 'react';
 import { Redirect } from 'react-router';
 
+import Storage from '../../utils/Storage';
+
 // ====
 
 class Login extends React.Component {
@@ -13,16 +15,18 @@ class Login extends React.Component {
             redirect_uri: 'http://localhost:3000/auth'
         };
 
-        this.requestLogin = this.requestLogin.bind(this);
-        this._generateRandomString = this._generateRandomString.bind(this);
-
         this.state = {
             isLogged: false
         };
+
+        this.storage = new Storage('spotify_tips');
+
+        this.requestLogin = this.requestLogin.bind(this);
+        this._generateRandomString = this._generateRandomString.bind(this);
     }
 
     componentDidMount() {
-        let access_token = localStorage.getItem('st_access_token');
+        let access_token = this.storage.get(); 
 
         if (access_token) {
             this.setState({ isLogged: true });
