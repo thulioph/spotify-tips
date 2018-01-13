@@ -1,19 +1,18 @@
 import React from 'react';
 import { Redirect } from 'react-router';
 
+import Storage from '../../utils/Storage';
+
 // ====
 
 class Logout extends React.Component {
     componentDidMount() {
-        localStorage.removeItem('st_access_token');
-        localStorage.removeItem('st_auth_params');
-        localStorage.removeItem('st_access_token_expiration_time');
+        const storage = new Storage('spotify_tips');
+        storage.clear();
     }
 
     render() {
-        return (
-            <Redirect to="/login"></Redirect>
-        )
+        return ( <Redirect to='/login' /> );
     }
 };
 
