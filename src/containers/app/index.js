@@ -20,7 +20,6 @@ class App extends React.Component {
     const access_token = localStorage.getItem('st_access_token');
 
     if (access_token) {
-      console.warn('tem o token', access_token);
       this.setState({ hasToken: true });
     } else {
       this.setState({ hasToken: false })
@@ -29,24 +28,37 @@ class App extends React.Component {
 
   render() {
     const { hasToken } = this.state;
+    
+    let logout_link;
+    let home_link;
+    let login_link;
+    
+    if (hasToken) {
+      logout_link = <li className="navbar-item"><Link to='/logout'>Logout</Link></li>
+      home_link = <li className="navbar-item"><Link to='/home'>Home</Link></li>
+    } else {
+      login_link = <li className="navbar-item"><Link to='/login'>Login</Link></li>
+    }
 
     return(
       <Router>
         <div>
-          {!hasToken ? <Redirect to="/login"></Redirect> : null}
+          {!hasToken && <Redirect to='/login' /> } 
           
           <Octocat 
             repoUrl="https://github.com/thulioph/spotify-tips/" 
             title="Fork me on Github" 
           />
 
-          <ul>
-            <li><Link to="/login">Login</Link></li>
-            {hasToken ? <li><Link to="/home">Home</Link></li> : null}
-            {hasToken ? <li><Link to="/logout">Logout</Link></li> : null}
-          </ul>
+          <nav className="navbar">
+            <ul className="navbar-menu">
+              {login_link}
+              {home_link}
+              {logout_link}
+            </ul>
+          </nav>
 
-          <Route exact path='/' component={Home} />
+          <Route path='/home' component={() => hasToken ? <Home /> : null} />
           <Route path='/login' component={Login} />
           <Route path='/auth' component={Auth} />
           <Route path='/logout' component={Logout} />
