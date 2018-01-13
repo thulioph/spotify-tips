@@ -2,6 +2,7 @@ import React from 'react';
 import { Redirect } from 'react-router';
 
 import Storage from '../../utils/Storage';
+import { getHashParams } from '../../utils';
 
 // ====
 
@@ -16,26 +17,14 @@ class Auth extends React.Component {
         this.storage = new Storage('spotify_tips');
     }
 
-    // ver a melhor maneira de obter esse valor
-    _getHashParams(key) {
-        const matches = window.location.hash.match(new RegExp(key + '=([^&]*)'));
-        return matches ? matches[1] : null;
-    }
-
     componentWillMount() {
-        const access_token = this._getHashParams('access_token');
+        const access_token = getHashParams(window.location.hash, 'access_token');
 
         if (access_token) {
-            const params = {
-                access_token,
-                expires_in: this._getHashParams('expires_in')
-            };
+            const expires_in = getHashParams(window.location.hash, 'expires_in');
 
-            this.storage.save(params);
-
+            this.storage.save({access_token, expires_in});
             this.setState({ isOk: true });
-        } else {
-            console.error('Algo deu errado.');
         }
     }
 
