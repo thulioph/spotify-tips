@@ -53,13 +53,22 @@ class Login extends React.Component {
 
         return (
             <section className="section">
-                <div className="container">
-                    <h1 className="title">Login</h1>
-                    <button onClick={this.requestLogin.bind(this)} className="button is-dark">
-                        Login
-                    </button>
+                <div className="columns">
+                    <div className="column is-half is-offset-one-quarter">
+                        <aside className="card-wrapper">
+                            <h1 className="title">Spotify Tips</h1>
+                            <h2 className="subtitle">
+                                Obtenha <strong>métricas e dicas</strong> sobre o que você anda ouvindo.
+                            </h2>
+
+                            <button className="button is-dark is-medium"
+                                onClick={this.requestLogin.bind(this)}>
+                                Login with Spotify
+                            </button>
+                        </aside>
+                    </div>
                 </div>
-            </section>
+             </section> 
         )
     }
 };
