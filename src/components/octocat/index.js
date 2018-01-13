@@ -12,7 +12,8 @@ const Octocat = (props) => {
         top: '0',
         right: '0',
         border: '0',
-        fill: '#151513'
+        fill: '#151513',
+        zIndex: '1'
     };
 
     let pathStyle = {

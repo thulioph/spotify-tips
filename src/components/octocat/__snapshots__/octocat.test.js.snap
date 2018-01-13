@@ -17,6 +17,7 @@ exports[`<Octocat /> Snapshot should render without crashing. 1`] = `
         "position": "absolute",
         "right": "0",
         "top": "0",
+        "zIndex": "1",
       }
     }
     viewBox="0 0 250 250"

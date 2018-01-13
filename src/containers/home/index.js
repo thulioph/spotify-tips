@@ -1,9 +1,12 @@
 import React from 'react';
+import { Redirect } from 'react-router';
 import SpotifyWrapper from 'spotify-wrapper';
 
 import TrackCard from '../../components/trackcard';
 import TrackInfo from '../../components/trackinfo';
 import TrackProgress from '../../components/trackprogress';
+
+import Storage from '../../utils/Storage';
 
 // ====
 
@@ -17,10 +20,13 @@ class Home extends React.Component {
             displayInfo: false,
             currentPreview: '',
             currentTime: '',
+            userProfile: {},
         };
 
+        this.storage = new Storage('spotify_tips');
+
         this.spotify = new SpotifyWrapper({
-            token: 'BQC8RENz0YriU84E24SiOGxSt8D0A_cy21sz_F5XJNTQwC7QYvgWHdOaRM1TN1SSTDGJdVYRgmwkFQ9zGj9ovCaissT5Zq44aE5vS05XGYlaeWJA443XqdgLwiswTR6dtsTZzODQwtEaUNkYWufif7A'
+            token: this.storage.get().access_token
         });
 
         this.audio = null;
@@ -29,6 +35,15 @@ class Home extends React.Component {
     componentDidMount() {
         const topTracks = this.spotify.user.topTracks();
         topTracks.then(track => this.setState({ tracks: track.items }));
+
+        const requestProfile = this.spotify.user.profile();
+        requestProfile.then(data => {
+            this.setState((prevState) => {
+                return { 
+                    userProfile: Object.assign(prevState, data) 
+                };
+            })
+        });
     }
 
     handleTrackFeatures(obj) {
@@ -138,7 +153,13 @@ class Home extends React.Component {
     }
 
     render() {
-        const { tracks, trackInfo, displayInfo, currentPreview, currentTime } = this.state;
+        const { tracks, trackInfo, displayInfo, currentPreview, currentTime, userProfile } = this.state;
+
+        const access_token = this.storage.get().access_token;
+
+        if (!access_token) {
+            return( <Redirect to='/login' /> );
+        }
 
         let cTimer = currentTime.replace('%', '');
         let containerClass = `container`;
@@ -151,7 +172,12 @@ class Home extends React.Component {
             <div>
                 <main className={containerClass}>
                     <section className="section">
-                        <h1 className="title">Home</h1>
+                        <div className="container">
+                            <h1 className="title">Home</h1>
+                            <h2 className="subtitle">
+                                Olá <strong>{userProfile.display_name}</strong>, essas são as <strong>20 músicas</strong> que você mais ouviu.
+                            </h2>
+                        </div>
                     </section>
 
                     <section className="section">
