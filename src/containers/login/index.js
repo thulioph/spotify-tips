@@ -25,10 +25,8 @@ class Login extends React.Component {
         let access_token = localStorage.getItem('st_access_token');
 
         if (access_token) {
-            console.warn('tem o token', access_token);
             this.setState({ isLogged: true });
         } else {
-            console.warn('o access_token não existe..');
             this.setState({ isLogged: false });
         }
     }
@@ -56,9 +54,7 @@ class Login extends React.Component {
         const { isLogged } = this.state;
 
         if (isLogged) {
-            return(
-                <Redirect to="/"></Redirect>
-            );
+            return (<Redirect to='/home' />);
         }
 
         return (
