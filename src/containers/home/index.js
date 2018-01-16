@@ -30,6 +30,8 @@ class Home extends React.Component {
         });
 
         this.audio = null;
+
+        this.hideTrackInfo = this.hideTrackInfo.bind(this);
     }
 
     componentDidMount() {
@@ -44,6 +46,10 @@ class Home extends React.Component {
                 };
             })
         });
+    }
+
+    hideTrackInfo() {
+        setTimeout(() => this.setState({ displayInfo: false }), 30001);
     }
 
     handleTrackFeatures(obj) {
@@ -111,7 +117,7 @@ class Home extends React.Component {
             this.setState({ displayInfo: true });
         });
 
-        setTimeout(() => this.setState({ displayInfo: false }), 30001);
+        this.hideTrackInfo();
     }
 
     displayTrackAudio(element, previewUrl) {
