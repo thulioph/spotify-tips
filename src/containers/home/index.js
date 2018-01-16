@@ -5,6 +5,7 @@ import SpotifyWrapper from 'spotify-wrapper';
 import TrackCard from '../../components/trackcard';
 import TrackInfo from '../../components/trackinfo';
 import TrackProgress from '../../components/trackprogress';
+import TrackPreview from '../../components/trackpreview';
 
 import Storage from '../../utils/Storage';
 
@@ -21,6 +22,7 @@ class Home extends React.Component {
             currentPreview: '',
             currentTime: '',
             userProfile: {},
+            tracksPreviewList: [],
         };
 
         this.storage = new Storage('spotify_tips');
@@ -32,6 +34,7 @@ class Home extends React.Component {
         this.audio = null;
 
         this.hideTrackInfo = this.hideTrackInfo.bind(this);
+        this.getTrackRecomendations = this.getTrackRecomendations.bind(this);
     }
 
     componentDidMount() {
@@ -49,7 +52,7 @@ class Home extends React.Component {
     }
 
     hideTrackInfo() {
-        setTimeout(() => this.setState({ displayInfo: false }), 30001);
+        this.setState({ displayInfo: false });
     }
 
     handleTrackFeatures(obj) {
@@ -138,7 +141,10 @@ class Home extends React.Component {
         this.audio.addEventListener('ended', (e) => {
             element.classList.remove('js-active');
             this.setState({ currentTime: '0%' });
+            
             this.audio = null;
+            
+            this.hideTrackInfo();
         });
     }
 
@@ -149,17 +155,27 @@ class Home extends React.Component {
         element.classList.add('js-active');
     }
 
+    getTrackRecomendations(trackID) {
+        const tracks = this.spotify.user.recomendations('tracks', trackID);
+
+        tracks.then(data => {
+            console.warn(data);
+            this.setState({ tracksPreviewList: data.tracks });
+        });
+    }
+
     handleTrackCardClicked(evt, trackID, previewUrl) {
         const { currentTarget } = evt;
 
         this.setTrackAsActive(currentTarget);
 
-        this.displayTrackInformation(trackID);
-        this.displayTrackAudio(currentTarget, previewUrl);
+        this.getTrackRecomendations(trackID);
+        // this.displayTrackInformation(trackID);
+        // this.displayTrackAudio(currentTarget, previewUrl);
     }
 
     render() {
-        const { tracks, trackInfo, displayInfo, currentPreview, currentTime, userProfile } = this.state;
+        const { tracks, trackInfo, displayInfo, currentPreview, currentTime, userProfile, tracksPreviewList } = this.state;
 
         const access_token = this.storage.get().access_token;
 
@@ -206,6 +222,19 @@ class Home extends React.Component {
                         <TrackInfo infoList={trackInfo} isVisible={displayInfo} />
                     </section>
                 </main>
+
+                <section className="section track-preview-wrapper">
+                    {tracksPreviewList.map(el => (
+                        <TrackPreview
+                            key={el.id}
+                            isVisible={displayInfo}
+                            trackName={el.name}
+                            trackArtist={el.album.artists[0].name}
+                            trackImage={el.album.images[0].url}
+                            trackPreviewUrl={el.preview_url}
+                        />
+                    ))};
+                </section>
 
                 <section className="track-progress">
                     <TrackProgress preview={currentPreview} time={currentTime} />
