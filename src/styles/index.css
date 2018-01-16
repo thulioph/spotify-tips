@@ -17,6 +17,9 @@ body, html {
   height: 100%;
 }
 
+.icon {
+  font-family: 'FontAwesome';
+}
 
 /* 
   Login Page
@@ -241,4 +244,26 @@ img {
   position: fixed;
   bottom: 0;
   width: 100%;
+}
+
+/* 
+  Track Preview
+  ====
+*/
+
+.track-preview-wrapper {
+  overflow-x: scroll;
+  height: 140px;
+  background: pink;
+}
+
+.track-preview {
+  width: 260px;
+  margin: 5px 10px;
+  height: 112px;
+  display: inline-block;
+}
+
+.track-preview strong {
+  word-break: break-all;
 }
