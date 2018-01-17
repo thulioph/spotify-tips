@@ -26,7 +26,7 @@ const TrackPreview = (props) => {
                         <p>
                             <strong>{trackName}</strong>
 
-                            <small> {trackArtist}</small> 
+                            <small>{trackArtist}</small> 
 
                             {   trackPreviewUrl ? 
                                     <audio src={trackPreviewUrl} controls>
