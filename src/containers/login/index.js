@@ -13,7 +13,7 @@ class Login extends React.Component {
         this.config = {
             client_id: '6df3fdd0cfd144968c9ba086f7bbbf31',
             scope: 'user-read-email user-top-read',
-            redirect_uri: 'http://thulioph.com/spotify-tips/auth'
+            redirect_uri: 'https://thulioph.github.io/spotify-tips/auth'
         };
 
         this.state = {
