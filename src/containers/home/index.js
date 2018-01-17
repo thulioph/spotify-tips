@@ -3,7 +3,6 @@ import { Redirect } from 'react-router';
 import SpotifyWrapper from 'spotify-wrapper';
 
 import TrackCard from '../../components/trackcard';
-import TrackInfo from '../../components/trackinfo';
 import TrackProgress from '../../components/trackprogress';
 import TrackPreview from '../../components/trackpreview';
 
@@ -170,12 +169,13 @@ class Home extends React.Component {
         this.setTrackAsActive(currentTarget);
 
         this.getTrackRecomendations(trackID);
+        this.displayTrackAudio(currentTarget, previewUrl);
+        
         // this.displayTrackInformation(trackID);
-        // this.displayTrackAudio(currentTarget, previewUrl);
     }
 
     render() {
-        const { tracks, trackInfo, displayInfo, currentPreview, currentTime, userProfile, tracksPreviewList } = this.state;
+        const { tracks, displayInfo, currentPreview, currentTime, userProfile, tracksPreviewList } = this.state;
 
         const access_token = this.storage.get().access_token;
 
@@ -216,10 +216,6 @@ class Home extends React.Component {
                                 />
                             ))}
                         </ul>
-                    </section>
-
-                    <section className="section">
-                        <TrackInfo infoList={trackInfo} isVisible={displayInfo} />
                     </section>
                 </main>
 
