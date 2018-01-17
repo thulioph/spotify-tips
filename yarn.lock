@@ -6291,9 +6291,9 @@ spdy@^3.4.1:
     select-hose "^2.0.0"
     spdy-transport "^2.0.18"
 
-"spotify-wrapper@git+https://github.com/thulioph/spotify-wrapper.git":
-  version "1.0.1"
-  resolved "git+https://github.com/thulioph/spotify-wrapper.git#1bddd3dc1bfdfccd0d3768f18cbc48229a483f8a"
+spotify-wrapper-web-api@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/spotify-wrapper-web-api/-/spotify-wrapper-web-api-1.0.5.tgz#c4cb42efe4125d94efb4be1e6c4dadfe32ef020f"
 
 sprintf-js@~1.0.2:
   version "1.0.3"
