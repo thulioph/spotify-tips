@@ -1,6 +1,6 @@
 import React from 'react';
 import { Redirect } from 'react-router';
-import SpotifyWrapper from 'spotify-wrapper';
+import SpotifyWrapper from 'spotify-wrapper-web-api';
 
 import TrackCard from '../../components/trackcard';
 import TrackInfo from '../../components/trackinfo';
