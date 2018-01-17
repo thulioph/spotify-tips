@@ -24,14 +24,16 @@ const TrackPreview = (props) => {
                 <div className="media-content">
                     <div className="content">
                         <p>
-                            <strong>{trackName}</strong> -
+                            <strong>{trackName}</strong>
+
                             <small> {trackArtist}</small> 
 
-                            <br />
-
-                            <audio src={trackPreviewUrl} controls>
-                                Your browser not support audio
-                            </audio>
+                            {   trackPreviewUrl ? 
+                                    <audio src={trackPreviewUrl} controls>
+                                        Your browser not support audio
+                                    </audio>
+                                : null
+                            }
                         </p>
                     </div>
                 </div>
