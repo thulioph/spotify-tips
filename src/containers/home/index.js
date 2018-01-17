@@ -34,6 +34,7 @@ class Home extends React.Component {
 
         this.hideTrackInfo = this.hideTrackInfo.bind(this);
         this.getTrackRecomendations = this.getTrackRecomendations.bind(this);
+        this.displayRecommendedTracks = this.displayRecommendedTracks.bind(this);
     }
 
     componentDidMount() {
@@ -138,7 +139,7 @@ class Home extends React.Component {
         });
 
         this.audio.addEventListener('ended', (e) => {
-            element.classList.remove('js-active');
+            // element.classList.remove('js-active');
             this.setState({ currentTime: '0%' });
             
             this.audio = null;
@@ -154,12 +155,23 @@ class Home extends React.Component {
         element.classList.add('js-active');
     }
 
+    displayRecommendedTracks() {
+        const element = document.querySelector('.track-preview-wrapper');
+        const container = document.querySelector('.container');
+
+        element.classList.add('js-active');
+        container.classList.add('js-active');
+    }
+
     getTrackRecomendations(trackID) {
         const tracks = this.spotify.user.recomendations('tracks', trackID);
 
         tracks.then(data => {
-            console.warn(data);
-            this.setState({ tracksPreviewList: data.tracks });
+            this.setState({ 
+                tracksPreviewList: data.tracks
+            });
+
+            this.displayRecommendedTracks();
         });
     }
 
@@ -183,21 +195,15 @@ class Home extends React.Component {
             return( <Redirect to='/login' /> );
         }
 
-        let cTimer = currentTime.replace('%', '');
-        let containerClass = `container`;
-
-        if (cTimer > 0) {
-            containerClass = `container js-active`;
-        }
-
         return(
             <div>
-                <main className={containerClass}>
+                <main className="container">
                     <section className="section">
                         <div className="container">
-                            <h1 className="title">Home</h1>
+                            <h1 className="title">Olá <strong>{userProfile.display_name}!</strong></h1>
                             <h2 className="subtitle">
-                                Olá <strong>{userProfile.display_name}</strong>, essas são as <strong>20 músicas</strong> que você mais ouviu.
+                                Essas foram as <strong>{tracks.length} músicas</strong> que você mais ouviu até hoje. <br />
+                                Conheça <strong>novas músicas</strong> com base na <strong>que você clicar</strong>.
                             </h2>
                         </div>
                     </section>
@@ -227,7 +233,7 @@ class Home extends React.Component {
                             trackName={el.name}
                             trackArtist={el.album.artists[0].name}
                             trackImage={el.album.images[0].url}
-                            trackPreviewUrl={el.preview_url}
+                            trackPreviewUrl={el.preview_url || null}
                         />
                     ))};
                 </section>
