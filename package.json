@@ -28,7 +28,7 @@
     "eject": "react-scripts eject",
     "coveralls": "nyc npm run test -- --coverage && nyc report --reporter=text-lcov | coveralls",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -b master -d build"
+    "deploy": "gh-pages -b gh-pages -d build"
   },
   "homepage": "https://thulioph.github.io/spotify-tips"
 }
