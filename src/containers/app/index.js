@@ -37,11 +37,9 @@ class App extends React.Component {
   render() {
     const { hasToken } = this.state;
     
-    let home_link;
     let logout_link;
     
     if (hasToken) {
-      home_link = <li className="navbar-item"><Link to='/home'>Home</Link></li>
       logout_link = <li className="navbar-item"><Link to='/logout'>Logout</Link></li>
     }
 
@@ -59,7 +57,6 @@ class App extends React.Component {
             hasToken ? 
               <nav className="navbar">
                 <ul className="navbar-menu">
-                  {home_link}
                   {logout_link}
                 </ul>
               </nav>
