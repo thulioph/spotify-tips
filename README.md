@@ -20,12 +20,6 @@ $ yarn start
 - Jest + Enzyme + Chai + Sinon
 - Bulma
 
-## Deploy for GitHub Pages
-
-```shell
-$ yarn deploy
-```
-
 ## License
 
 [MIT License](http://thulioph.mit-license.org/)

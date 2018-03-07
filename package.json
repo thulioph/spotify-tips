@@ -27,5 +27,5 @@
     "eject": "react-scripts eject",
     "coveralls": "nyc npm run test -- --coverage && nyc report --reporter=text-lcov | coveralls"
   },
-  "homepage": "https://thulioph.github.io/spotify-tips"
+  "homepage": "https://spotify-tips.herokuapp.com/"
 }
