@@ -1,8 +1,8 @@
 import React from 'react';
 import { Redirect } from 'react-router';
 
-import Storage from '../../utils/Storage';
-import { getHashParams } from '../../utils';
+import Storage from 'utils/Storage';
+import { getHashParams } from 'utils';
 
 // ====
 

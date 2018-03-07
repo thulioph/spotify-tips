@@ -1,7 +1,7 @@
 import React from 'react';
 import { Redirect } from 'react-router';
 
-import Storage from '../../utils/Storage';
+import Storage from 'utils/Storage';
 
 // ====
 
