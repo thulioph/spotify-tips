@@ -18,7 +18,7 @@
     "react-test-renderer": "^16.2.0",
     "sinon": "^4.1.4",
     "sinon-chai": "^2.14.0",
-    "spotify-wrapper": "git+https://github.com/thulioph/spotify-wrapper.git"
+    "spotify-wrapper-web-api": "^1.0.5"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -26,5 +26,6 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "coveralls": "nyc npm run test -- --coverage && nyc report --reporter=text-lcov | coveralls"
-  }
+  },
+  "homepage": "https://thulioph.github.io/spotify-tips"
 }
