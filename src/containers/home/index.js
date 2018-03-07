@@ -2,11 +2,11 @@ import React from 'react';
 import { Redirect } from 'react-router';
 import SpotifyWrapper from 'spotify-wrapper-web-api';
 
-import TrackCard from '../../components/trackcard';
-import TrackProgress from '../../components/trackprogress';
-import TrackPreview from '../../components/trackpreview';
+import TrackCard from 'components/trackcard';
+import TrackProgress from 'components/trackprogress';
+import TrackPreview from 'components/trackpreview';
 
-import Storage from '../../utils/Storage';
+import Storage from 'utils/Storage';
 
 // ====
 
