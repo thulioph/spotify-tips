@@ -4,6 +4,8 @@ import { Redirect } from 'react-router';
 import Storage from '../../utils/Storage';
 import { randomString } from '../../utils';
 
+const Genius = require('node-genius');
+
 // ====
 
 class Login extends React.Component {
@@ -21,6 +23,8 @@ class Login extends React.Component {
         };
 
         this.storage = new Storage('spotify_tips');
+
+        this.geniusApi = new Genius('hGRRe7QIOm2TdVdjtF0LylhXlgS5vnIaSsn84hOoG32MZavGmnqi1IMY2NF7Ys0Y');
     }
 
     componentDidMount() {
@@ -46,6 +50,13 @@ class Login extends React.Component {
         window.location = url;
     }
 
+    genius() {
+        debugger;
+        this.geniusApi.search('Kendrick Lamar', (error, results) => {
+            console.warn(error, results);
+        });
+    }
+
     render() {
         const { isLogged } = this.state;
 
@@ -67,7 +78,10 @@ class Login extends React.Component {
                                 onClick={(evt) => this.requestLogin(evt)}>
                                 Entrar com Spotify
                             </button>
+
+                            <button className="button is-dark is-big" onClick={this.genius.bind(this)}>genius</button>
                         </aside>
+
                     </div>
                 </div>
              </section> 
