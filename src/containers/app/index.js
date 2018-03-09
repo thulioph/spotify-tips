@@ -53,7 +53,7 @@ class App extends React.Component {
             title="Fork me on Github" 
           />
 
-          {
+          {/* {
             hasToken ? 
               <nav className="navbar">
                 <ul className="navbar-menu">
@@ -61,7 +61,7 @@ class App extends React.Component {
                 </ul>
               </nav>
             : null
-          }
+          } */}
 
           <Route path='/home' component={Home}/>
           <Route path='/login' component={Login} />
