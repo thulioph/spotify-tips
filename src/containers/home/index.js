@@ -2,11 +2,31 @@ import React from 'react';
 import { Redirect } from 'react-router';
 import SpotifyWrapper from 'spotify-wrapper-web-api';
 
-import TrackCard from 'components/trackcard';
+// Theme
+import AppBar from 'material-ui/AppBar';
+import { GridList } from 'material-ui/GridList';
+
+import GridItem from 'components/griditem';
+import Drawer from 'components/drawer';
+
 import TrackProgress from 'components/trackprogress';
-import TrackPreview from 'components/trackpreview';
 
 import Storage from 'utils/Storage';
+
+// ====
+
+const styles = {
+    root: {
+        display: 'flex',
+        flexWrap: 'wrap',
+        justifyContent: 'space-around',
+    },
+    gridList: {
+        width: '100%',
+        height: '100%',
+        overflowY: 'auto',
+    },
+};
 
 // ====
 
@@ -22,6 +42,7 @@ class Home extends React.Component {
             currentTime: '',
             userProfile: {},
             tracksPreviewList: [],
+            openDrawer: false
         };
 
         this.storage = new Storage('spotify_tips');
@@ -34,7 +55,6 @@ class Home extends React.Component {
 
         this.hideTrackInfo = this.hideTrackInfo.bind(this);
         this.getTrackRecomendations = this.getTrackRecomendations.bind(this);
-        this.displayRecommendedTracks = this.displayRecommendedTracks.bind(this);
     }
 
     componentDidMount() {
@@ -123,7 +143,7 @@ class Home extends React.Component {
         this.hideTrackInfo();
     }
 
-    displayTrackAudio(element, previewUrl) {
+    displayTrackAudio(element = null, previewUrl) {
         if (this.audio) {
             this.audio.pause();
         }
@@ -148,21 +168,6 @@ class Home extends React.Component {
         });
     }
 
-    setTrackAsActive(element) {
-        const tracks = document.querySelectorAll('.section-list_item');
-        tracks.forEach(el => el.classList.remove('js-active'));
-
-        element.classList.add('js-active');
-    }
-
-    displayRecommendedTracks() {
-        const element = document.querySelector('.track-preview-wrapper');
-        const container = document.querySelector('.container');
-
-        element.classList.add('js-active');
-        container.classList.add('js-active');
-    }
-
     getTrackRecomendations(trackID) {
         const tracks = this.spotify.user.recomendations('tracks', trackID);
 
@@ -171,23 +176,30 @@ class Home extends React.Component {
                 tracksPreviewList: data.tracks
             });
 
-            this.displayRecommendedTracks();
+            this.openDrawer();
         });
     }
 
-    handleTrackCardClicked(evt, trackID, previewUrl) {
-        const { currentTarget } = evt;
-
-        this.setTrackAsActive(currentTarget);
-
+    handleTrackCardClicked(trackID, previewUrl) {
         this.getTrackRecomendations(trackID);
-        this.displayTrackAudio(currentTarget, previewUrl);
-        
+        // this.displayTrackAudio(previewUrl);
         // this.displayTrackInformation(trackID);
     }
 
+    openDrawer = () => {
+        this.setState({
+            openDrawer: true
+        });
+    }
+
+    handleDrawer = () => {
+        this.setState({
+            openDrawer: false
+        });
+    }
+
     render() {
-        const { tracks, displayInfo, currentPreview, currentTime, userProfile, tracksPreviewList } = this.state;
+        const { tracks, currentPreview, currentTime, userProfile, tracksPreviewList, openDrawer } = this.state;
 
         const access_token = this.storage.get().access_token;
 
@@ -197,46 +209,32 @@ class Home extends React.Component {
 
         return(
             <div>
-                <main className="container">
-                    <section className="section">
-                        <div className="container">
-                            <h1 className="title">Olá <strong>{userProfile.display_name}!</strong></h1>
-                            <h2 className="subtitle">
-                                Essas foram as <strong>{tracks.length} músicas</strong> que você mais ouviu até hoje. <br />
-                                Conheça <strong>novas músicas</strong> com base na <strong>que você clicar</strong>.
-                            </h2>
-                        </div>
-                    </section>
+                <AppBar
+                    title={`Olá ${userProfile.display_name}!`}
+                    iconClassNameRight="muidocs-icon-navigation-expand-more"
+                />
 
-                    <section className="section">
-                        <ul className="section-list">
-                            {tracks && tracks.length && tracks.map(el => (
-                                <TrackCard 
-                                    key={el.id}
-                                    trackId={el.id}
-                                    previewUrl={el.preview_url}
-                                    trackImage={el.album.images[0].url}
-                                    trackName={el.name}
-                                    artistName={el.artists[0].name}
-                                    displayInfo={this.handleTrackCardClicked.bind(this)}
-                                />
-                            ))}
-                        </ul>
-                    </section>
-                </main>
+                <div style={styles.root}>    
+                    <GridList style={styles.gridList} cols={5}>
+                        {tracks && tracks.map(el => (
+                            <GridItem 
+                                key={el.id}
+                                trackId={el.id}
+                                previewUrl={el.preview_url}
+                                trackImage={el.album.images[0].url}
+                                trackName={el.name}
+                                artistName={el.artists[0].name}
+                                displayInfo={this.handleTrackCardClicked.bind(this)}
+                            />
+                        ))}
+                    </GridList>
 
-                <section className="section track-preview-wrapper">
-                    {tracksPreviewList.map(el => (
-                        <TrackPreview
-                            key={el.id}
-                            isVisible={displayInfo}
-                            trackName={el.name}
-                            trackArtist={el.album.artists[0].name}
-                            trackImage={el.album.images[0].url}
-                            trackPreviewUrl={el.preview_url || null}
-                        />
-                    ))};
-                </section>
+                    <Drawer 
+                        open={openDrawer} 
+                        handleClick={this.handleDrawer} 
+                        content={tracksPreviewList}
+                    />
+                </div>
 
                 <section className="track-progress">
                     <TrackProgress preview={currentPreview} time={currentTime} />
