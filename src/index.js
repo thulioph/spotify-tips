@@ -4,10 +4,18 @@ import ReactDOM from 'react-dom';
 // ====
 
 import 'styles/index.css';
-import App from 'containers/app';
+import AppComponent from 'containers/app';
 import registerServiceWorker from 'registerServiceWorker';
 
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+
 // ====
+
+const App = () => (
+    <MuiThemeProvider>
+        <AppComponent />
+    </MuiThemeProvider>
+);
 
 ReactDOM.render(
     <App />, 
