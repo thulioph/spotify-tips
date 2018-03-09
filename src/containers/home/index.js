@@ -3,7 +3,6 @@ import { Redirect } from 'react-router';
 import SpotifyWrapper from 'spotify-wrapper-web-api';
 
 // Theme
-import AppBar from 'material-ui/AppBar';
 import { GridList } from 'material-ui/GridList';
 
 import GridItem from 'components/griditem';
@@ -209,11 +208,6 @@ class Home extends React.Component {
 
         return(
             <div>
-                <AppBar
-                    title={`Olá ${userProfile.display_name}!`}
-                    iconClassNameRight="muidocs-icon-navigation-expand-more"
-                />
-
                 <div style={styles.root}>    
                     <GridList style={styles.gridList} cols={5}>
                         {tracks && tracks.map(el => (
