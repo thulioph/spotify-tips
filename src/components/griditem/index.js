@@ -21,22 +21,34 @@ const styles = {
 
 // ====
 
-const GridItem = ({ trackId, trackImage, trackName, artistName, displayInfo, previewUrl }) => (
-    <GridTile
-        key={trackId}
-        title={trackName}
-        subtitle={<span>by <b>{artistName}</b></span>}
-        actionIcon={
+const GridTileActionIcon = ({ displayInfo, trackId, previewUrl }) => {
+    return(
+        <div>
             <IconButton onClick={(evt) => displayInfo(trackId, previewUrl)}>
                 <ActionInfo color="rgb(0, 188, 212)" />
             </IconButton>
-        }
-        titleStyle={styles.titleStyle}
-        titleBackground="linear-gradient(to top, rgba(0,0,0,0.7) 0%,rgba(0,0,0,0.3) 70%,rgba(0,0,0,0) 100%)"
-    >
-        <img src={trackImage} alt={artistName} />
-    </GridTile>
-);
+        </div>
+    )
+};
+
+// ====
+
+const GridItem = (props) => {
+    const { trackId, trackImage, trackName, artistName } = props;
+
+    return (
+        <GridTile
+            key={trackId}
+            title={trackName}
+            subtitle={<span>by <b>{artistName}</b></span>}
+            actionIcon={<GridTileActionIcon {...props} />}
+            titleStyle={styles.titleStyle}
+            titleBackground="linear-gradient(to top, rgba(0,0,0,0.7) 0%,rgba(0,0,0,0.3) 70%,rgba(0,0,0,0) 100%)">
+
+            <img src={trackImage} alt={artistName} />
+        </GridTile>
+    )
+};
 
 // ====
 
