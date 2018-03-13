@@ -2,14 +2,16 @@ import React from 'react';
 import { Redirect } from 'react-router';
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 
-import Home from '../home';
-import Login from '../login';
-import Auth from '../auth';
-import Logout from '../logout';
+import Home from 'containers/home';
+import Login from 'containers/login';
+import Auth from 'containers/auth';
+import Logout from 'containers/logout';
 
-import Octocat from '../../components/octocat';
+import TrackInfo from 'containers/track-info';
 
-import Storage from '../../utils/Storage';
+import Octocat from 'components/octocat';
+
+import Storage from 'utils/Storage';
 
 // ====
 
@@ -64,6 +66,8 @@ class App extends React.Component {
           } */}
 
           <Route path='/home' component={Home}/>
+          <Route path='/track/:trackID/info' component={TrackInfo}/>
+
           <Route path='/login' component={Login} />
           <Route path='/auth' component={Auth} />
           <Route path='/logout' component={Logout} />
