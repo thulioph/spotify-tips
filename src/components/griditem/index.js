@@ -21,10 +21,10 @@ const styles = {
 
 // ====
 
-const GridTileActionIcon = ({ displayInfo, trackId, previewUrl }) => {
+const GridTileActionIcon = ({displayInfo, ...rest}) => {
     return(
         <div>
-            <IconButton onClick={(evt) => displayInfo(trackId, previewUrl)}>
+            <IconButton onClick={(evt) => displayInfo(rest)}>
                 <ActionInfo color="rgb(0, 188, 212)" />
             </IconButton>
         </div>
