@@ -6,8 +6,6 @@ import SpotifyWrapper from 'spotify-wrapper-web-api';
 import { GridList } from 'material-ui/GridList';
 
 import GridItem from 'components/griditem';
-import Drawer from 'components/drawer';
-
 import TrackProgress from 'components/trackprogress';
 
 import Storage from 'utils/Storage';
@@ -41,7 +39,6 @@ class Home extends React.Component {
             currentTime: '',
             userProfile: {},
             tracksPreviewList: [],
-            openDrawer: false
         };
 
         this.storage = new Storage('spotify_tips');
@@ -52,8 +49,7 @@ class Home extends React.Component {
 
         this.audio = null;
 
-        this.hideTrackInfo = this.hideTrackInfo.bind(this);
-        this.getTrackRecomendations = this.getTrackRecomendations.bind(this);
+        this.handleTrackCardClicked = this.handleTrackCardClicked.bind(this);
     }
 
     componentDidMount() {
@@ -68,78 +64,6 @@ class Home extends React.Component {
                 };
             })
         });
-    }
-
-    hideTrackInfo() {
-        this.setState({ displayInfo: false });
-    }
-
-    handleTrackFeatures(obj) {
-        let arr = [];
-
-        Object.keys(obj).forEach(el => {
-            if (el === 'danceability') {
-                arr.push({
-                    legend: [el],
-                    value: `${Math.round(obj[el] * 100)}%`,
-                    title: 'Se a música é dançante' // mais próximo de 1.0 é dançante
-                });
-            }
-
-            if (el === 'energy') {
-                arr.push({
-                    legend: [el],
-                    value: `${Math.round(obj[el] * 100)}%`,
-                    title: 'Se a música é energética' // mais próximo de 1.0 é enérgica
-                });
-            }
-
-            if (el === 'mode') {
-                arr.push({
-                    legend: [el],
-                    value: `${Math.round(obj[el] * 100)}%`,
-                    title: 'Se a música é melódica' // mais próximo de 1.0 é melódica
-                });
-            }
-
-            if (el === 'speechiness') {
-                arr.push({
-                    legend: [el],
-                    value: `${Math.round(obj[el] * 100)}%`,
-                    title: 'Se a música tem palavras faladas' // mais próximo de 1.0 tem
-                });
-            }
-
-            if (el === 'liveness') {
-                arr.push({
-                    legend: [el],
-                    value: `${Math.round(obj[el] * 100)}%`,
-                    title: 'Se a música é ao vivo' // acima de 0.8 é ao vivo
-                });
-            }
-
-            if (el === 'valence') {
-                arr.push({
-                    legend: [el],
-                    value: `${Math.round(obj[el] * 100)}%`,
-                    title: 'Se a música tem uma vibe positiva' // mais próximo de 1.0 é positiva (feliz, eufórica)
-                });
-            }
-        });
-
-        this.setState({ trackInfo: arr });
-    }
-
-    displayTrackInformation(trackID) {
-        const trackFeatures = this.spotify.audio.features(trackID);
-
-        trackFeatures.then(data => {
-            this.handleTrackFeatures(data);
-
-            this.setState({ displayInfo: true });
-        });
-
-        this.hideTrackInfo();
     }
 
     displayTrackAudio(element = null, previewUrl) {
@@ -167,38 +91,16 @@ class Home extends React.Component {
         });
     }
 
-    getTrackRecomendations(trackID) {
-        const tracks = this.spotify.user.recomendations('tracks', trackID);
-
-        tracks.then(data => {
-            this.setState({ 
-                tracksPreviewList: data.tracks
-            });
-
-            this.openDrawer();
-        });
-    }
-
-    handleTrackCardClicked(trackID, previewUrl) {
-        this.getTrackRecomendations(trackID);
+    handleTrackCardClicked(track) {
+        const { history } = this.props;
+        history.push(`track/${track.trackId}/info`, { track });
+        
         // this.displayTrackAudio(previewUrl);
         // this.displayTrackInformation(trackID);
     }
 
-    openDrawer = () => {
-        this.setState({
-            openDrawer: true
-        });
-    }
-
-    handleDrawer = () => {
-        this.setState({
-            openDrawer: false
-        });
-    }
-
     render() {
-        const { tracks, currentPreview, currentTime, userProfile, tracksPreviewList, openDrawer } = this.state;
+        const { tracks, currentPreview, currentTime, userProfile } = this.state;
 
         const access_token = this.storage.get().access_token;
 
@@ -218,16 +120,10 @@ class Home extends React.Component {
                                 trackImage={el.album.images[0].url}
                                 trackName={el.name}
                                 artistName={el.artists[0].name}
-                                displayInfo={this.handleTrackCardClicked.bind(this)}
+                                displayInfo={this.handleTrackCardClicked}
                             />
                         ))}
                     </GridList>
-
-                    <Drawer 
-                        open={openDrawer} 
-                        handleClick={this.handleDrawer} 
-                        content={tracksPreviewList}
-                    />
                 </div>
 
                 <section className="track-progress">
