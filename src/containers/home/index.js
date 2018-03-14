@@ -2,11 +2,11 @@ import React from 'react';
 import { Redirect } from 'react-router';
 import SpotifyWrapper from 'spotify-wrapper-web-api';
 
-// Theme
 import { GridList } from 'material-ui/GridList';
+import Snackbar from 'material-ui/Snackbar';
 
 import GridItem from 'components/griditem';
-import TrackProgress from 'components/trackprogress';
+import DrawerPage from 'components/drawer-page';
 
 import Storage from 'utils/Storage';
 
@@ -17,6 +17,7 @@ const styles = {
         display: 'flex',
         flexWrap: 'wrap',
         justifyContent: 'space-around',
+        marginLeft: '0%'
     },
     gridList: {
         width: '100%',
@@ -33,12 +34,12 @@ class Home extends React.Component {
 
         this.state = {
             tracks: [],
-            trackInfo: [],
-            displayInfo: false,
-            currentPreview: '',
-            currentTime: '',
             userProfile: {},
+            seedArtist: {},
+            openDrawer: false,
             tracksPreviewList: [],
+            snackActive: false,
+            snackMessage: '',
         };
 
         this.storage = new Storage('spotify_tips');
@@ -47,60 +48,76 @@ class Home extends React.Component {
             token: this.storage.get().access_token
         });
 
-        this.audio = null;
-
+        this.getUserTopTracks = this.getUserTopTracks.bind(this);
+        this.getUserProfile = this.getUserProfile.bind(this);
+        this.displaySnackBar = this.displaySnackBar.bind(this);
+        this.getTrackRecomendations = this.getTrackRecomendations.bind(this);
+        this.changeSeedArtist = this.changeSeedArtist.bind(this);
+        this.openDrawer = this.openDrawer.bind(this);
         this.handleTrackCardClicked = this.handleTrackCardClicked.bind(this);
     }
 
     componentDidMount() {
-        const topTracks = this.spotify.user.topTracks();
-        topTracks.then(track => this.setState({ tracks: track.items }));
+        this.getUserTopTracks();
+        this.getUserProfile();
+    }
 
-        const requestProfile = this.spotify.user.profile();
-        requestProfile.then(data => {
-            this.setState((prevState) => {
-                return { 
-                    userProfile: Object.assign(prevState, data) 
-                };
-            })
+    getUserTopTracks() {
+        const topTracks = this.spotify.user.topTracks();
+        topTracks.then(track => {
+            this.setState({ tracks: track.items });
         });
     }
 
-    displayTrackAudio(element = null, previewUrl) {
-        if (this.audio) {
-            this.audio.pause();
-        }
+    getUserProfile() {
+        const requestProfile = this.spotify.user.profile();
 
-        this.audio = new Audio(previewUrl);
-        this.audio.play();
+        requestProfile.then(data => {
+            this.setState((prevState) => {
+                return {
+                    userProfile: Object.assign(prevState, data)
+                };
+            });
 
-        this.audio.addEventListener('timeupdate', (e) => {
-            const currentTime = Math.floor(e.target.currentTime);
-            const duration = Math.floor(e.target.duration);
-
-            this.setState({ currentTime: `${(100 - (duration - currentTime))}%` });
+            this.displaySnackBar(`Hello ${this.state.userProfile.display_name}`);
         });
+    }
 
-        this.audio.addEventListener('ended', (e) => {
-            // element.classList.remove('js-active');
-            this.setState({ currentTime: '0%' });
-            
-            this.audio = null;
-            
-            this.hideTrackInfo();
+    displaySnackBar(message = '') {
+        this.setState({ 
+            snackActive: !this.state.snackActive,
+            snackMessage: message
         });
+    }
+
+    getTrackRecomendations(trackID) {
+        const tracks = this.spotify.user.recomendations('tracks', trackID);
+
+        tracks.then(data => {
+            this.setState({
+                tracksPreviewList: data.tracks
+            });
+
+            this.openDrawer();
+            this.displaySnackBar('Recomendações prontas!');
+        });
+    }
+
+    openDrawer() {
+        this.setState({ openDrawer: true });
+    }
+
+    changeSeedArtist(track) {
+        this.setState({ seedArtist: track });
     }
 
     handleTrackCardClicked(track) {
-        const { history } = this.props;
-        history.push(`track/${track.trackId}/info`, { track });
-        
-        // this.displayTrackAudio(previewUrl);
-        // this.displayTrackInformation(trackID);
+        this.getTrackRecomendations(track.trackId);
+        this.changeSeedArtist(track);
     }
 
     render() {
-        const { tracks, currentPreview, currentTime, userProfile } = this.state;
+        const { tracks, tracksPreviewList, openDrawer, seedArtist, snackActive, snackMessage } = this.state;
 
         const access_token = this.storage.get().access_token;
 
@@ -110,7 +127,13 @@ class Home extends React.Component {
 
         return(
             <div>
-                <div style={styles.root}>    
+                <DrawerPage
+                    open={openDrawer}
+                    content={tracksPreviewList}
+                    seed={seedArtist || null}
+                />
+
+                <div style={styles.root}>
                     <GridList style={styles.gridList} cols={5}>
                         {tracks && tracks.map(el => (
                             <GridItem 
@@ -126,9 +149,12 @@ class Home extends React.Component {
                     </GridList>
                 </div>
 
-                <section className="track-progress">
-                    <TrackProgress preview={currentPreview} time={currentTime} />
-                </section>
+                <Snackbar
+                    open={snackActive}
+                    message={snackMessage}
+                    autoHideDuration={4000}
+                    onRequestClose={this.displaySnackBar}
+                />
             </div>
         )
     }
