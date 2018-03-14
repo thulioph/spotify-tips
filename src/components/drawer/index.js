@@ -1,19 +1,38 @@
 import React from 'react';
 import Drawer from 'material-ui/Drawer';
+import Subheader from 'material-ui/Subheader';
 
 import TrackItem from 'components/trackitem';
 
 // ====
 
-const DrawerComponent = ({open, handleClick, content}) => {
+const renderSeed = ({ trackName, artistName, trackImage, previewUrl}) => {
+    return(
+        <div>
+            <Subheader>Artista Principal</Subheader>
+            <TrackItem
+                isVisible={true}
+                trackName={trackName}
+                trackArtist={artistName}
+                trackImage={trackImage}
+                trackPreviewUrl={previewUrl}
+            />
+        </div>
+    )
+};
+
+const DrawerComponent = ({ docked = true, open, handleClick = null, content, seed }) => {
     return (
         <div>
             <Drawer
-                docked={false}
-                width={'30%'}
+                docked={docked}
+                width={'20%'}
                 open={open}
-                onRequestChange={(open) => handleClick()}
-            >
+                onRequestChange={(open) => handleClick()}>
+                
+                { seed ? renderSeed(seed) : null }
+
+                <Subheader>Você pode curtir</Subheader>
                 {content.map(el => (
                     <TrackItem
                         key={el.id}
