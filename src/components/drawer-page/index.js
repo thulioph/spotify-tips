@@ -3,6 +3,7 @@ import Drawer from 'material-ui/Drawer';
 import Subheader from 'material-ui/Subheader';
 
 import TrackItem from 'components/trackitem';
+import DrawerTabs from 'components/drawer-tabs';
 
 // ====
 
@@ -13,7 +14,7 @@ const styles = {
         justifyContent: 'space-between',
     },
     grid: {
-        width: '50%',
+        width: '100%',
         height: '100%',
         overflowY: 'auto',
     },
@@ -37,7 +38,7 @@ class DrawerPage extends React.Component {
     }
 
     render() {
-        const { docked = true, open, handleClick = null, content, seed } = this.props;
+        const { docked = true, open, handleClick = null, content, seed, artistInfo, handleClose } = this.props;
 
         return (
             <div>
@@ -47,28 +48,18 @@ class DrawerPage extends React.Component {
                     open={open}
                     onRequestChange={(open) => handleClick()}>
 
+                    <button onClick={() => handleClose()}>Fechar</button>
+
                     <section style={styles.root}>
                         <article style={styles.grid}>
                             { seed ? this.renderSeed(seed) : null }
                         </article>
                         
                         <article style={styles.grid}>
-                            <Subheader>Você pode curtir</Subheader>
-
-                            {content.map(el => (
-                                <TrackItem
-                                    key={el.id}
-                                    isVisible={true}
-                                    trackName={el.name}
-                                    trackArtist={el.album.artists[0].name}
-                                    trackImage={el.album.images[0].url}
-                                    trackPreviewUrl={el.preview_url || null}
-                                />
-                            ))}
+                            <DrawerTabs artistBio={artistInfo} relatedSongs={content} />
                         </article>
                     </section>
-
-            </Drawer>
+                </Drawer>
             </div>
         );
     }
