@@ -40,6 +40,7 @@ class Home extends React.Component {
             tracksPreviewList: [],
             snackActive: false,
             snackMessage: '',
+            artistProfile: []
         };
 
         this.storage = new Storage('spotify_tips');
@@ -55,6 +56,7 @@ class Home extends React.Component {
         this.changeSeedArtist = this.changeSeedArtist.bind(this);
         this.openDrawer = this.openDrawer.bind(this);
         this.handleTrackCardClicked = this.handleTrackCardClicked.bind(this);
+        this.getArtistProfile = this.getArtistProfile.bind(this);
     }
 
     componentDidMount() {
@@ -83,6 +85,11 @@ class Home extends React.Component {
         });
     }
 
+    getArtistProfile(artistName) {
+        const artistProfile = this.spotify.search.artists(artistName);
+        artistProfile.then(data => this.setState({ artistProfile: data.artists.items }));
+    }
+
     displaySnackBar(message = '') {
         this.setState({ 
             snackActive: !this.state.snackActive,
@@ -104,7 +111,7 @@ class Home extends React.Component {
     }
 
     openDrawer() {
-        this.setState({ openDrawer: true });
+        this.setState({ openDrawer: !this.state.openDrawer });
     }
 
     changeSeedArtist(track) {
@@ -114,10 +121,11 @@ class Home extends React.Component {
     handleTrackCardClicked(track) {
         this.getTrackRecomendations(track.trackId);
         this.changeSeedArtist(track);
+        this.getArtistProfile(track.artistName);
     }
 
     render() {
-        const { tracks, tracksPreviewList, openDrawer, seedArtist, snackActive, snackMessage } = this.state;
+        const { tracks, tracksPreviewList, openDrawer, seedArtist, snackActive, snackMessage, artistProfile } = this.state;
 
         const access_token = this.storage.get().access_token;
 
@@ -131,6 +139,8 @@ class Home extends React.Component {
                     open={openDrawer}
                     content={tracksPreviewList}
                     seed={seedArtist || null}
+                    artistInfo={artistProfile}
+                    handleClose={this.openDrawer}
                 />
 
                 <div style={styles.root}>
