@@ -1,6 +1,6 @@
 import React from 'react';
 import { Redirect } from 'react-router';
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 
 import Home from 'containers/home';
 import Login from 'containers/login';
@@ -38,32 +38,16 @@ class App extends React.Component {
 
   render() {
     const { hasToken } = this.state;
-    
-    let logout_link;
-    
-    if (hasToken) {
-      logout_link = <li className="navbar-item"><Link to='/logout'>Logout</Link></li>
-    }
 
     return(
       <Router>
         <main>
-          {!hasToken && <Redirect to='/login' /> } 
+          { !hasToken && <Redirect to='/login' /> } 
           
           <Octocat 
             repoUrl="https://github.com/thulioph/spotify-tips/" 
             title="Fork me on Github" 
           />
-
-          {/* {
-            hasToken ? 
-              <nav className="navbar">
-                <ul className="navbar-menu">
-                  {logout_link}
-                </ul>
-              </nav>
-            : null
-          } */}
 
           <Route path='/home' component={Home}/>
           <Route path='/track/:trackID/info' component={TrackInfo}/>
