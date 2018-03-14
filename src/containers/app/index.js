@@ -49,6 +49,8 @@ class App extends React.Component {
             title="Fork me on Github" 
           />
 
+          <Route exact path='/' render={() => <Redirect to='/login' />}/>
+
           <Route path='/home' component={Home}/>
           <Route path='/track/:trackID/info' component={TrackInfo}/>
 
