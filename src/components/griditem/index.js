@@ -24,7 +24,7 @@ const styles = {
 const GridTileActionIcon = ({displayInfo, ...rest}) => {
     return(
         <div>
-            <IconButton onClick={(evt) => displayInfo(rest)}>
+            <IconButton onClick={(evt) => displayInfo(rest)} title="Click to get information about this artist">
                 <ActionInfo color="rgb(0, 188, 212)" />
             </IconButton>
         </div>
