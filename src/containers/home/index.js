@@ -42,7 +42,8 @@ class Home extends React.Component {
             tracksPreviewList: [],
             snackActive: false,
             snackMessage: '',
-            artistProfile: []
+            artistProfile: [],
+            seedArtistMBID: {}
         };
 
         this.storage = new Storage('spotify_tips');
@@ -97,12 +98,13 @@ class Home extends React.Component {
     }
 
     getArtistInfo(artistName) {
-        const obj = {
-            name: artistName
-        };
-
         this.lastfm.artistInfo(artistName)
-            .then((data) => console.warn('success:', data))
+            .then(({ artist }) => {
+                if (artist.mbid) {
+                    // console.warn('Has [MBID] => ', artist);
+                    this.setState({ seedArtistMBID: artist });
+                }
+            })
             .catch((err) => console.error('error:', err))
     }
 
@@ -134,19 +136,15 @@ class Home extends React.Component {
     }
 
     handleTrackCardClicked(track) {
-        // debugger;
-
-        // this.getTrackRecomendations(track.trackId);
-        // this.changeSeedArtist(track);
-        // this.getArtistProfile(track.artistName);
-        
+        this.getTrackRecomendations(track.trackId);
+        this.changeSeedArtist(track);
+        this.getArtistProfile(track.artistName);        
         this.getArtistInfo(track.artistName);
-
-        // this.openDrawer();
+        this.openDrawer();
     }
 
     render() {
-        const { tracks, tracksPreviewList, openDrawer, seedArtist, snackActive, snackMessage, artistProfile } = this.state;
+        const { tracks, tracksPreviewList, openDrawer, seedArtist, snackActive, snackMessage, artistProfile, seedArtistMBID } = this.state;
 
         const access_token = this.storage.get().access_token;
 
@@ -156,13 +154,18 @@ class Home extends React.Component {
 
         return(
             <div>
-                <DrawerPage
-                    open={openDrawer}
-                    content={tracksPreviewList}
-                    seed={seedArtist || null}
-                    artistInfo={artistProfile}
-                    handleClose={this.openDrawer}
-                />
+                { 
+                    artistProfile.length !== 0 ? 
+                        <DrawerPage
+                            open={openDrawer}
+                            content={tracksPreviewList}
+                            seed={seedArtist || null}
+                            artistInfo={artistProfile}
+                            handleClose={this.openDrawer}
+                            artistBio={seedArtistMBID}
+                        />
+                    : null
+                }
 
                 <div style={styles.root}>
                     <GridList style={styles.gridList} cols={5}>

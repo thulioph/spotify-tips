@@ -38,7 +38,11 @@ class DrawerPage extends React.Component {
     }
 
     render() {
-        const { docked = true, open, handleClick = null, content, seed, artistInfo, handleClose } = this.props;
+        const { docked = true, open, handleClick = null, content, seed, artistInfo, handleClose, artistBio } = this.props;
+        
+        if (Object.keys(seed).length <= 0) {
+            return null;
+        }
 
         return (
             <div>
@@ -56,7 +60,11 @@ class DrawerPage extends React.Component {
                         </article>
                         
                         <article style={styles.grid}>
-                            <DrawerTabs artistBio={artistInfo} relatedSongs={content} />
+                            <DrawerTabs 
+                                artistInfo={artistInfo} 
+                                relatedSongs={content}
+                                artistBio={artistBio && artistBio.bio && artistBio.bio.content}
+                            />
                         </article>
                     </section>
                 </Drawer>
