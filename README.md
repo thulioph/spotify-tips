@@ -38,5 +38,5 @@ $ yarn start
     - status da vida (se tá morto, se tá vivo, life-span)
     - entendendo a api do [musicbrainz](https://musicbrainz.org/doc/Style/)
     - entendendo o **mbid** (https://musicbrainz.org/doc/MusicBrainz_Identifier)
-- [ ] Obter informacoes sobre a letra da música utilizando a api do [musixmatch](https://developer.musixmatch.com/documentation/api-reference/track-lyrics-get)
+- [x] Obter informacoes sobre a letra da música utilizando a api do [musixmatch](https://developer.musixmatch.com/documentation/api-reference/track-lyrics-get)
 - [ ] Outra alternativa para obter a letra da música (https://github.com/rhnvrm/lyric-api)
