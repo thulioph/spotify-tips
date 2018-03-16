@@ -11,6 +11,7 @@ import DrawerPage from 'components/drawer-page';
 
 import Storage from 'utils/Storage';
 import LastFM from 'utils/LastFM';
+import MusicBrainz from 'utils/MusicBrainz';
 
 // ====
 
@@ -53,6 +54,7 @@ class Home extends React.Component {
         });
         
         this.lastfm = new LastFM('09348b1f3d5b4f6be5f9002755bf0587');
+        this.mbApi = new MusicBrainz();
 
         this.getUserTopTracks = this.getUserTopTracks.bind(this);
         this.getUserProfile = this.getUserProfile.bind(this);
@@ -64,6 +66,7 @@ class Home extends React.Component {
         this.getArtistProfile = this.getArtistProfile.bind(this);
 
         this.getArtistInfo = this.getArtistInfo.bind(this);
+        this.getArtistDetails = this.getArtistDetails.bind(this);
     }
 
     componentDidMount() {
@@ -101,8 +104,8 @@ class Home extends React.Component {
         this.lastfm.artistInfo(artistName)
             .then(({ artist }) => {
                 if (artist.mbid) {
-                    // console.warn('Has [MBID] => ', artist);
                     this.setState({ seedArtistMBID: artist });
+                    this.getArtistDetails(artist.mbid);
                 }
             })
             .catch((err) => console.error('error:', err))
@@ -125,6 +128,12 @@ class Home extends React.Component {
 
             this.displaySnackBar('Recomendações prontas!');
         });
+    }
+
+    getArtistDetails(mbid) {
+        this.mbApi.artistInfo(mbid)
+            .then((data) => console.warn('success', data))
+            .catch((err) => console.warn('err', err))
     }
 
     openDrawer() {
