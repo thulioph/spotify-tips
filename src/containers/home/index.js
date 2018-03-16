@@ -12,6 +12,7 @@ import DrawerPage from 'components/drawer-page';
 import Storage from 'utils/Storage';
 import LastFM from 'utils/LastFM';
 import MusicBrainz from 'utils/MusicBrainz';
+import Lyrics from 'utils/Lyrics';
 
 // ====
 
@@ -44,7 +45,8 @@ class Home extends React.Component {
             snackActive: false,
             snackMessage: '',
             artistProfile: [],
-            seedArtistMBID: {}
+            seedArtistMBID: {},
+            currentLyrics: {}
         };
 
         this.storage = new Storage('spotify_tips');
@@ -55,6 +57,7 @@ class Home extends React.Component {
         
         this.lastfm = new LastFM('09348b1f3d5b4f6be5f9002755bf0587');
         this.mbApi = new MusicBrainz();
+        this.lyrics = new Lyrics();
 
         this.getUserTopTracks = this.getUserTopTracks.bind(this);
         this.getUserProfile = this.getUserProfile.bind(this);
@@ -67,6 +70,9 @@ class Home extends React.Component {
 
         this.getArtistInfo = this.getArtistInfo.bind(this);
         this.getArtistDetails = this.getArtistDetails.bind(this);
+        
+        this.getTrackId = this.getTrackId.bind(this);
+        this.getLyrics = this.getLyrics.bind(this);
     }
 
     componentDidMount() {
@@ -104,8 +110,8 @@ class Home extends React.Component {
         this.lastfm.artistInfo(artistName)
             .then(({ artist }) => {
                 if (artist.mbid) {
-                    this.setState({ seedArtistMBID: artist });
                     this.getArtistDetails(artist.mbid);
+                    this.setState({ seedArtistMBID: artist });
                 }
             })
             .catch((err) => console.error('error:', err))
@@ -132,8 +138,26 @@ class Home extends React.Component {
 
     getArtistDetails(mbid) {
         this.mbApi.artistInfo(mbid)
-            .then((data) => console.warn('success', data))
-            .catch((err) => console.warn('err', err))
+            .then((data) => console.warn('success:', data))
+            .catch((err) => console.error('err mbApi:', err))
+    }
+
+    getTrackId(artistInfo) {
+        this.lyrics.getTrackInfo(artistInfo)
+            .then((data) => {
+                this.getLyrics(data.track_list[0].track.track_id)
+            })
+            .catch((err) => console.error('error lyrics:', err))
+    }
+    
+    getLyrics(trackId) {
+        this.lyrics.getLyrics(trackId)
+            .then((data) => {
+                this.setState({
+                    currentLyrics: data.lyrics.lyrics_body
+                });
+            })
+            .catch((err) => console.error('error lyrics:', err))
     }
 
     openDrawer() {
@@ -149,11 +173,17 @@ class Home extends React.Component {
         this.changeSeedArtist(track);
         this.getArtistProfile(track.artistName);        
         this.getArtistInfo(track.artistName);
+        
+        this.getTrackId({
+            artist: encodeURIComponent(track.artistName),
+            track: encodeURIComponent(track.trackName)
+        });
+
         this.openDrawer();
     }
 
     render() {
-        const { tracks, tracksPreviewList, openDrawer, seedArtist, snackActive, snackMessage, artistProfile, seedArtistMBID } = this.state;
+        const { tracks, tracksPreviewList, openDrawer, seedArtist, snackActive, snackMessage, artistProfile, seedArtistMBID, currentLyrics } = this.state;
 
         const access_token = this.storage.get().access_token;
 
@@ -172,6 +202,7 @@ class Home extends React.Component {
                             artistInfo={artistProfile}
                             handleClose={this.openDrawer}
                             artistBio={seedArtistMBID}
+                            lyrics={currentLyrics}
                         />
                     : null
                 }

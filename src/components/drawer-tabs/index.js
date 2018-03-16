@@ -34,6 +34,9 @@ const styles = {
     chip: {
         margin: 4,
     },
+    lyricsArea: {
+        padding: '20px'
+    },
 };
 
 const renderArtistInfo = (el, bio, artists) => {
@@ -85,8 +88,14 @@ const renderArtistInfo = (el, bio, artists) => {
 
 const filterByPopularity = (arr) => arr.sort((a, b) => b.popularity - a.popularity)[0];
 
-const DrawerTabs = ({ artistInfo, relatedSongs, artistBio, artistSimilar }) =>  {
+const DrawerTabs = ({ artistInfo, relatedSongs, artistBio, artistSimilar, lyrics }) =>  {
     const dale = renderArtistInfo(filterByPopularity(artistInfo), artistBio.content, artistSimilar.artist);
+
+    let artistLyrics = '';
+
+    if (Object.keys(lyrics).length !== 0) {
+        artistLyrics = lyrics;
+    }
     
     return(
         <Tabs>
@@ -95,6 +104,12 @@ const DrawerTabs = ({ artistInfo, relatedSongs, artistBio, artistSimilar }) =>  
                     <Subheader>Conheça mais sobre o artista</Subheader>
 
                     {artistInfo ? dale : null }
+                </div>
+            </Tab>
+
+            <Tab label="Lyrics">
+                <div style={styles.lyricsArea}>
+                    {artistLyrics}
                 </div>
             </Tab>
 

@@ -38,7 +38,7 @@ class DrawerPage extends React.Component {
     }
 
     render() {
-        const { docked = true, open, handleClick = null, content, seed, artistInfo, handleClose, artistBio } = this.props;
+        const { docked = true, open, handleClick = null, content, seed, artistInfo, handleClose, artistBio, lyrics } = this.props;
         
         if (Object.keys(seed).length <= 0) {
             return null;
@@ -68,6 +68,7 @@ class DrawerPage extends React.Component {
                                             relatedSongs={content}
                                             artistBio={artistBio && artistBio.bio}
                                             artistSimilar={artistBio && artistBio.similar}
+                                            lyrics={lyrics}
                                         />
                                     : null
                         }
