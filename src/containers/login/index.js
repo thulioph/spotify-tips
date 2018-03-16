@@ -13,7 +13,7 @@ class Login extends React.Component {
         this.config = {
             client_id: '6df3fdd0cfd144968c9ba086f7bbbf31',
             scope: 'user-read-email user-top-read',
-            redirect_uri: 'http://spotify-tips.herokuapp.com/auth'
+            redirect_uri: 'https://spotify-tips.herokuapp.com/auth'
         };
 
         this.state = {
