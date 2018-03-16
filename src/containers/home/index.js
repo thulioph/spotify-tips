@@ -5,10 +5,12 @@ import SpotifyWrapper from 'spotify-wrapper-web-api';
 import { GridList } from 'material-ui/GridList';
 import Snackbar from 'material-ui/Snackbar';
 
+
 import GridItem from 'components/griditem';
 import DrawerPage from 'components/drawer-page';
 
 import Storage from 'utils/Storage';
+import LastFM from 'utils/LastFM';
 
 // ====
 
@@ -48,6 +50,8 @@ class Home extends React.Component {
         this.spotify = new SpotifyWrapper({
             token: this.storage.get().access_token
         });
+        
+        this.lastfm = new LastFM('09348b1f3d5b4f6be5f9002755bf0587');
 
         this.getUserTopTracks = this.getUserTopTracks.bind(this);
         this.getUserProfile = this.getUserProfile.bind(this);
@@ -57,6 +61,8 @@ class Home extends React.Component {
         this.openDrawer = this.openDrawer.bind(this);
         this.handleTrackCardClicked = this.handleTrackCardClicked.bind(this);
         this.getArtistProfile = this.getArtistProfile.bind(this);
+
+        this.getArtistInfo = this.getArtistInfo.bind(this);
     }
 
     componentDidMount() {
@@ -90,6 +96,16 @@ class Home extends React.Component {
         artistProfile.then(data => this.setState({ artistProfile: data.artists.items }));
     }
 
+    getArtistInfo(artistName) {
+        const obj = {
+            name: artistName
+        };
+
+        this.lastfm.artistInfo(artistName)
+            .then((data) => console.warn('success:', data))
+            .catch((err) => console.error('error:', err))
+    }
+
     displaySnackBar(message = '') {
         this.setState({ 
             snackActive: !this.state.snackActive,
@@ -105,7 +121,6 @@ class Home extends React.Component {
                 tracksPreviewList: data.tracks
             });
 
-            this.openDrawer();
             this.displaySnackBar('Recomendações prontas!');
         });
     }
@@ -119,9 +134,15 @@ class Home extends React.Component {
     }
 
     handleTrackCardClicked(track) {
-        this.getTrackRecomendations(track.trackId);
-        this.changeSeedArtist(track);
-        this.getArtistProfile(track.artistName);
+        // debugger;
+
+        // this.getTrackRecomendations(track.trackId);
+        // this.changeSeedArtist(track);
+        // this.getArtistProfile(track.artistName);
+        
+        this.getArtistInfo(track.artistName);
+
+        // this.openDrawer();
     }
 
     render() {
@@ -150,7 +171,7 @@ class Home extends React.Component {
                                 key={el.id}
                                 trackId={el.id}
                                 previewUrl={el.preview_url}
-                                trackImage={el.album.images[0].url}
+                                trackImage={el.album.images[0].url || ''}
                                 trackName={el.name}
                                 artistName={el.artists[0].name}
                                 displayInfo={this.handleTrackCardClicked}
