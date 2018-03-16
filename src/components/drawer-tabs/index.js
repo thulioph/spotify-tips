@@ -36,7 +36,7 @@ const styles = {
     },
 };
 
-const renderArtistInfo = (el, bio) => {
+const renderArtistInfo = (el, bio, artists) => {
     return(
         <div key={el.id}>
             <h2>{el.name}</h2>
@@ -46,6 +46,8 @@ const renderArtistInfo = (el, bio) => {
             <a style={styles.link} href={el.external_urls.spotify} target="_blank" rel="noopener">Abrir no Spotify</a>
 
             <div style={styles.chip_wrapper}>
+                <span>Gender:</span>
+
                 {el.genres.map((gender, idx) => (
                     <Chip
                         key={idx}
@@ -54,6 +56,20 @@ const renderArtistInfo = (el, bio) => {
                         style={styles.chip}>
                         
                         {gender}
+                    </Chip>
+                ))}
+            </div>
+
+            <div style={styles.chip_wrapper}>
+                <span>Similar artists:</span>
+
+                {artists.map((el, idx) => (
+                    <Chip
+                        key={idx}
+                        onClick={() => console.warn('clicked')}
+                        style={styles.chip}>
+
+                        {el.name}
                     </Chip>
                 ))}
             </div>
@@ -69,14 +85,16 @@ const renderArtistInfo = (el, bio) => {
 
 const filterByPopularity = (arr) => arr.sort((a, b) => b.popularity - a.popularity)[0];
 
-const DrawerTabs = ({ artistInfo, relatedSongs, artistBio }) =>  {
+const DrawerTabs = ({ artistInfo, relatedSongs, artistBio, artistSimilar }) =>  {
+    const dale = renderArtistInfo(filterByPopularity(artistInfo), artistBio.content, artistSimilar.artist);
+    
     return(
         <Tabs>
             <Tab label="Artist Bio" >
                 <div>
                     <Subheader>Conheça mais sobre o artista</Subheader>
 
-                    {artistInfo ? renderArtistInfo(filterByPopularity(artistInfo), artistBio) : null }
+                    {artistInfo ? dale : null }
                 </div>
             </Tab>
 

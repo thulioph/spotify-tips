@@ -60,11 +60,17 @@ class DrawerPage extends React.Component {
                         </article>
                         
                         <article style={styles.grid}>
-                            <DrawerTabs 
-                                artistInfo={artistInfo} 
-                                relatedSongs={content}
-                                artistBio={artistBio && artistBio.bio && artistBio.bio.content}
-                            />
+                        {
+                                artistBio && artistBio.bio 
+                                    ? 
+                                        <DrawerTabs 
+                                            artistInfo={artistInfo} 
+                                            relatedSongs={content}
+                                            artistBio={artistBio && artistBio.bio}
+                                            artistSimilar={artistBio && artistBio.similar}
+                                        />
+                                    : null
+                        }
                         </article>
                     </section>
                 </Drawer>
