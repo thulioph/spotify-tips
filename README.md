@@ -26,10 +26,10 @@ $ yarn start
 
 ## Roadmap
 
-- [ ] Obter informações sobre o artista utilizando a api do [Last.fm](https://github.com/feross/last-fm#lastfmartistinfoopts-err-data--)
-    - api_key do last.fm === '09348b1f3d5b4f6be5f9002755bf0587'
-    - exibir informações da bio e artistas similares
-    - a api vai me retornar o **mbid** do artista, com esse número eu consigo realizar requests na api do **musicbrainz**.
+- [x] Obter informações sobre o artista utilizando a api do [Last.fm](https://github.com/feross/last-fm#lastfmartistinfoopts-err-data--)
+    - [x] api_key do last.fm === '09348b1f3d5b4f6be5f9002755bf0587'
+    - [ ] exibir informações da bio e artistas similares
+    - [ ] a api vai me retornar o **mbid** do artista, com esse número eu consigo realizar requests na api do **musicbrainz**.
 - [ ] Obter mais informações sobre o artista, utilizando a api do [musicbrainz](https://wiki.musicbrainz.org/Development)
     - http://musicbrainz.org/ws/2/artist/[51af0b6a-083a-4da7-99ee-3a94843269c2]?inc=aliases&fmt=json (MBID é o número que está entre colchetes)
     - https://wiki.musicbrainz.org/Development/JSON_Web_Service (webservice)
