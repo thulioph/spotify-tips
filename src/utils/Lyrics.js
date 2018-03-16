@@ -1,6 +1,6 @@
 class Lyrics {
     constructor(params) {
-        this.urlBase = 'http://api.musixmatch.com/ws/1.1';
+        this.urlBase = 'https://api.musixmatch.com/ws/1.1';
         this.apiKey = 'd95b640665bfafd624f6b975e8ba91ce';
     }
 

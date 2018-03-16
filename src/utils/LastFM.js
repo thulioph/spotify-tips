@@ -4,7 +4,7 @@ class LastFM {
     }
 
     request(params) {
-        const urlBase = 'http://ws.audioscrobbler.com/2.0';
+        const urlBase = 'https://ws.audioscrobbler.com/2.0';
         const requestMethod = 'artist.getInfo';
         const format = 'json';
         

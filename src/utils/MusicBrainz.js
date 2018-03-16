@@ -1,6 +1,6 @@
 class MusicBrainz {
     request(params) {
-        const urlBase = 'http://musicbrainz.org/ws/2';
+        const urlBase = 'https://musicbrainz.org/ws/2';
         const requestMethod = 'artist';
         const format = 'json';
         const mbidNumber = params;
