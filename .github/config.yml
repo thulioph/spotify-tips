@@ -1,0 +1,6 @@
+todo:
+  keyword: "@issueTitle"
+  bodyKeyword: "@issueBody"
+  blobLines: 5
+  autoAssign: true
+  label: true
