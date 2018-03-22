@@ -14,6 +14,9 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
 // ====
 
+// @issueTitle Updates the theme style
+// @issueBody This theme isn't so good.
+
 const App = () => (
     <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
         <AppComponent />
