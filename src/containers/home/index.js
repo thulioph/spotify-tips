@@ -2,11 +2,31 @@ import React from 'react';
 import { Redirect } from 'react-router';
 import SpotifyWrapper from 'spotify-wrapper-web-api';
 
-import TrackCard from 'components/trackcard';
-import TrackProgress from 'components/trackprogress';
-import TrackPreview from 'components/trackpreview';
+import { GridList } from 'material-ui/GridList';
+import Snackbar from 'material-ui/Snackbar';
+
+
+import GridItem from 'components/griditem';
+import DrawerPage from 'components/drawer-page';
 
 import Storage from 'utils/Storage';
+import LastFM from 'utils/LastFM';
+
+// ====
+
+const styles = {
+    root: {
+        display: 'flex',
+        flexWrap: 'wrap',
+        justifyContent: 'space-around',
+        marginLeft: '0%'
+    },
+    gridList: {
+        width: '100%',
+        height: '100%',
+        overflowY: 'auto',
+    },
+};
 
 // ====
 
@@ -16,12 +36,13 @@ class Home extends React.Component {
 
         this.state = {
             tracks: [],
-            trackInfo: [],
-            displayInfo: false,
-            currentPreview: '',
-            currentTime: '',
             userProfile: {},
+            seedArtist: {},
+            openDrawer: false,
             tracksPreviewList: [],
+            snackActive: false,
+            snackMessage: '',
+            artistProfile: []
         };
 
         this.storage = new Storage('spotify_tips');
@@ -29,165 +50,103 @@ class Home extends React.Component {
         this.spotify = new SpotifyWrapper({
             token: this.storage.get().access_token
         });
+        
+        this.lastfm = new LastFM('09348b1f3d5b4f6be5f9002755bf0587');
 
-        this.audio = null;
-
-        this.hideTrackInfo = this.hideTrackInfo.bind(this);
+        this.getUserTopTracks = this.getUserTopTracks.bind(this);
+        this.getUserProfile = this.getUserProfile.bind(this);
+        this.displaySnackBar = this.displaySnackBar.bind(this);
         this.getTrackRecomendations = this.getTrackRecomendations.bind(this);
-        this.displayRecommendedTracks = this.displayRecommendedTracks.bind(this);
+        this.changeSeedArtist = this.changeSeedArtist.bind(this);
+        this.openDrawer = this.openDrawer.bind(this);
+        this.handleTrackCardClicked = this.handleTrackCardClicked.bind(this);
+        this.getArtistProfile = this.getArtistProfile.bind(this);
+
+        this.getArtistInfo = this.getArtistInfo.bind(this);
     }
 
     componentDidMount() {
-        const topTracks = this.spotify.user.topTracks();
-        topTracks.then(track => this.setState({ tracks: track.items }));
+        this.getUserTopTracks();
+        this.getUserProfile();
+    }
 
+    getUserTopTracks() {
+        const topTracks = this.spotify.user.topTracks();
+        topTracks.then(track => {
+            this.setState({ tracks: track.items });
+        });
+    }
+
+    getUserProfile() {
         const requestProfile = this.spotify.user.profile();
+
         requestProfile.then(data => {
             this.setState((prevState) => {
-                return { 
-                    userProfile: Object.assign(prevState, data) 
+                return {
+                    userProfile: Object.assign(prevState, data)
                 };
-            })
+            });
+
+            this.displaySnackBar(`Hello ${this.state.userProfile.display_name}`);
         });
     }
 
-    hideTrackInfo() {
-        this.setState({ displayInfo: false });
+    getArtistProfile(artistName) {
+        const artistProfile = this.spotify.search.artists(artistName);
+        artistProfile.then(data => this.setState({ artistProfile: data.artists.items }));
     }
 
-    handleTrackFeatures(obj) {
-        let arr = [];
+    getArtistInfo(artistName) {
+        const obj = {
+            name: artistName
+        };
 
-        Object.keys(obj).forEach(el => {
-            if (el === 'danceability') {
-                arr.push({
-                    legend: [el],
-                    value: `${Math.round(obj[el] * 100)}%`,
-                    title: 'Se a música é dançante' // mais próximo de 1.0 é dançante
-                });
-            }
+        this.lastfm.artistInfo(artistName)
+            .then((data) => console.warn('success:', data))
+            .catch((err) => console.error('error:', err))
+    }
 
-            if (el === 'energy') {
-                arr.push({
-                    legend: [el],
-                    value: `${Math.round(obj[el] * 100)}%`,
-                    title: 'Se a música é energética' // mais próximo de 1.0 é enérgica
-                });
-            }
-
-            if (el === 'mode') {
-                arr.push({
-                    legend: [el],
-                    value: `${Math.round(obj[el] * 100)}%`,
-                    title: 'Se a música é melódica' // mais próximo de 1.0 é melódica
-                });
-            }
-
-            if (el === 'speechiness') {
-                arr.push({
-                    legend: [el],
-                    value: `${Math.round(obj[el] * 100)}%`,
-                    title: 'Se a música tem palavras faladas' // mais próximo de 1.0 tem
-                });
-            }
-
-            if (el === 'liveness') {
-                arr.push({
-                    legend: [el],
-                    value: `${Math.round(obj[el] * 100)}%`,
-                    title: 'Se a música é ao vivo' // acima de 0.8 é ao vivo
-                });
-            }
-
-            if (el === 'valence') {
-                arr.push({
-                    legend: [el],
-                    value: `${Math.round(obj[el] * 100)}%`,
-                    title: 'Se a música tem uma vibe positiva' // mais próximo de 1.0 é positiva (feliz, eufórica)
-                });
-            }
+    displaySnackBar(message = '') {
+        this.setState({ 
+            snackActive: !this.state.snackActive,
+            snackMessage: message
         });
-
-        this.setState({ trackInfo: arr });
-    }
-
-    displayTrackInformation(trackID) {
-        const trackFeatures = this.spotify.audio.features(trackID);
-
-        trackFeatures.then(data => {
-            this.handleTrackFeatures(data);
-
-            this.setState({ displayInfo: true });
-        });
-
-        this.hideTrackInfo();
-    }
-
-    displayTrackAudio(element, previewUrl) {
-        if (this.audio) {
-            this.audio.pause();
-        }
-
-        this.audio = new Audio(previewUrl);
-        this.audio.play();
-
-        this.audio.addEventListener('timeupdate', (e) => {
-            const currentTime = Math.floor(e.target.currentTime);
-            const duration = Math.floor(e.target.duration);
-
-            this.setState({ currentTime: `${(100 - (duration - currentTime))}%` });
-        });
-
-        this.audio.addEventListener('ended', (e) => {
-            // element.classList.remove('js-active');
-            this.setState({ currentTime: '0%' });
-            
-            this.audio = null;
-            
-            this.hideTrackInfo();
-        });
-    }
-
-    setTrackAsActive(element) {
-        const tracks = document.querySelectorAll('.section-list_item');
-        tracks.forEach(el => el.classList.remove('js-active'));
-
-        element.classList.add('js-active');
-    }
-
-    displayRecommendedTracks() {
-        const element = document.querySelector('.track-preview-wrapper');
-        const container = document.querySelector('.container');
-
-        element.classList.add('js-active');
-        container.classList.add('js-active');
     }
 
     getTrackRecomendations(trackID) {
         const tracks = this.spotify.user.recomendations('tracks', trackID);
 
         tracks.then(data => {
-            this.setState({ 
+            this.setState({
                 tracksPreviewList: data.tracks
             });
 
-            this.displayRecommendedTracks();
+            this.displaySnackBar('Recomendações prontas!');
         });
     }
 
-    handleTrackCardClicked(evt, trackID, previewUrl) {
-        const { currentTarget } = evt;
+    openDrawer() {
+        this.setState({ openDrawer: !this.state.openDrawer });
+    }
 
-        this.setTrackAsActive(currentTarget);
+    changeSeedArtist(track) {
+        this.setState({ seedArtist: track });
+    }
 
-        this.getTrackRecomendations(trackID);
-        this.displayTrackAudio(currentTarget, previewUrl);
+    handleTrackCardClicked(track) {
+        // debugger;
+
+        // this.getTrackRecomendations(track.trackId);
+        // this.changeSeedArtist(track);
+        // this.getArtistProfile(track.artistName);
         
-        // this.displayTrackInformation(trackID);
+        this.getArtistInfo(track.artistName);
+
+        // this.openDrawer();
     }
 
     render() {
-        const { tracks, displayInfo, currentPreview, currentTime, userProfile, tracksPreviewList } = this.state;
+        const { tracks, tracksPreviewList, openDrawer, seedArtist, snackActive, snackMessage, artistProfile } = this.state;
 
         const access_token = this.storage.get().access_token;
 
@@ -197,50 +156,36 @@ class Home extends React.Component {
 
         return(
             <div>
-                <main className="container">
-                    <section className="section">
-                        <div className="container">
-                            <h1 className="title">Olá <strong>{userProfile.display_name}!</strong></h1>
-                            <h2 className="subtitle">
-                                Essas foram as <strong>{tracks.length} músicas</strong> que você mais ouviu até hoje. <br />
-                                Conheça <strong>novas músicas</strong> com base na <strong>que você clicar</strong>.
-                            </h2>
-                        </div>
-                    </section>
+                <DrawerPage
+                    open={openDrawer}
+                    content={tracksPreviewList}
+                    seed={seedArtist || null}
+                    artistInfo={artistProfile}
+                    handleClose={this.openDrawer}
+                />
 
-                    <section className="section">
-                        <ul className="section-list">
-                            {tracks && tracks.length && tracks.map(el => (
-                                <TrackCard 
-                                    key={el.id}
-                                    trackId={el.id}
-                                    previewUrl={el.preview_url}
-                                    trackImage={el.album.images[0].url}
-                                    trackName={el.name}
-                                    artistName={el.artists[0].name}
-                                    displayInfo={this.handleTrackCardClicked.bind(this)}
-                                />
-                            ))}
-                        </ul>
-                    </section>
-                </main>
+                <div style={styles.root}>
+                    <GridList style={styles.gridList} cols={5}>
+                        {tracks && tracks.map(el => (
+                            <GridItem 
+                                key={el.id}
+                                trackId={el.id}
+                                previewUrl={el.preview_url}
+                                trackImage={el.album.images[0].url || ''}
+                                trackName={el.name}
+                                artistName={el.artists[0].name}
+                                displayInfo={this.handleTrackCardClicked}
+                            />
+                        ))}
+                    </GridList>
+                </div>
 
-                <section className="section track-preview-wrapper">
-                    {tracksPreviewList.map(el => (
-                        <TrackPreview
-                            key={el.id}
-                            isVisible={displayInfo}
-                            trackName={el.name}
-                            trackArtist={el.album.artists[0].name}
-                            trackImage={el.album.images[0].url}
-                            trackPreviewUrl={el.preview_url || null}
-                        />
-                    ))};
-                </section>
-
-                <section className="track-progress">
-                    <TrackProgress preview={currentPreview} time={currentTime} />
-                </section>
+                <Snackbar
+                    open={snackActive}
+                    message={snackMessage}
+                    autoHideDuration={4000}
+                    onRequestClose={this.displaySnackBar}
+                />
             </div>
         )
     }
