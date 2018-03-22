@@ -9,6 +9,9 @@ import registerServiceWorker from 'registerServiceWorker';
 
 // ====
 
+// @issueTitle It should open a new issue to test
+// @issueBody It's the issue body!
+
 ReactDOM.render(
     <App />, 
     document.getElementById('root')
