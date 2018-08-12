@@ -7,6 +7,7 @@ import TrackProgress from 'components/trackprogress';
 import TrackPreview from 'components/trackpreview';
 
 import Storage from 'utils/Storage';
+import WhoSampled from 'utils/WhoSampled';
 
 // ====
 
@@ -29,6 +30,8 @@ class Home extends React.Component {
         this.spotify = new SpotifyWrapper({
             token: this.storage.get().access_token
         });
+
+        this.whoSampled = new WhoSampled();
 
         this.audio = null;
 
@@ -175,15 +178,24 @@ class Home extends React.Component {
         });
     }
 
+    getSampleData() {
+        debugger;
+        this.whoSampled.getSamples('Wu-Tang-Clan')
+            .then(result => console.warn(result))
+            .catch(err => console.warn(err))
+    }
+
     handleTrackCardClicked(evt, trackID, previewUrl) {
         const { currentTarget } = evt;
 
         this.setTrackAsActive(currentTarget);
 
         this.getTrackRecomendations(trackID);
-        this.displayTrackAudio(currentTarget, previewUrl);
-        
+        // this.displayTrackAudio(currentTarget, previewUrl);
         // this.displayTrackInformation(trackID);
+
+        debugger;
+        this.getSampleData();
     }
 
     render() {
