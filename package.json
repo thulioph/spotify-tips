@@ -18,7 +18,8 @@
     "react-test-renderer": "^16.2.0",
     "sinon": "^4.1.4",
     "sinon-chai": "^2.14.0",
-    "spotify-wrapper-web-api": "^1.0.5"
+    "spotify-wrapper-web-api": "^1.0.5",
+    "x-ray": "^2.3.3"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -27,5 +28,6 @@
     "eject": "react-scripts eject",
     "coveralls": "nyc npm run test -- --coverage && nyc report --reporter=text-lcov | coveralls"
   },
-  "homepage": "https://spotify-tips.herokuapp.com/"
+  "homepage": "https://spotify-tips.herokuapp.com/",
+  "devDependencies": {}
 }
