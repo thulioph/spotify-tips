@@ -23,3 +23,20 @@ $ yarn start
 ## License
 
 [MIT License](http://thulioph.mit-license.org/)
+
+## Roadmap
+
+- [x] Obter informações sobre o artista utilizando a api do [Last.fm](https://github.com/feross/last-fm#lastfmartistinfoopts-err-data--)
+    - [x] api_key do last.fm === '09348b1f3d5b4f6be5f9002755bf0587'
+    - [x] exibir informações da bio e artistas similares
+    - [x] a api vai me retornar o **mbid** do artista, com esse número eu consigo realizar requests na api do **musicbrainz**.
+- [x] Obter mais informações sobre o artista, utilizando a api do [musicbrainz](https://wiki.musicbrainz.org/Development)
+    - http://musicbrainz.org/ws/2/artist/[51af0b6a-083a-4da7-99ee-3a94843269c2]?inc=aliases&fmt=json (MBID é o número que está entre colchetes)
+    - https://wiki.musicbrainz.org/Development/JSON_Web_Service (webservice)
+    - exibir informações sobre a área onde ele iniciou a carreira (begin_area)
+    - exibir o nome verdadeiro (aliases)
+    - status da vida (se tá morto, se tá vivo, life-span)
+    - entendendo a api do [musicbrainz](https://musicbrainz.org/doc/Style/)
+    - entendendo o **mbid** (https://musicbrainz.org/doc/MusicBrainz_Identifier)
+- [x] Obter informacoes sobre a letra da música utilizando a api do [musixmatch](https://developer.musixmatch.com/documentation/api-reference/track-lyrics-get)
+- [ ] Outra alternativa para obter a letra da música (https://github.com/rhnvrm/lyric-api)
