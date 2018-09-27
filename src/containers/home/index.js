@@ -1,5 +1,4 @@
 import React from 'react';
-import { Redirect } from 'react-router';
 import SpotifyWrapper from 'spotify-wrapper-web-api';
 
 import { GridList } from 'material-ui/GridList';
@@ -184,12 +183,6 @@ class Home extends React.Component {
 
     render() {
         const { tracks, tracksPreviewList, openDrawer, seedArtist, snackActive, snackMessage, artistProfile, seedArtistMBID, currentLyrics } = this.state;
-
-        const access_token = this.storage.get().access_token;
-
-        if (!access_token) {
-            return( <Redirect to='/login' /> );
-        }
 
         return(
             <div>
