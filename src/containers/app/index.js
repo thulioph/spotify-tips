@@ -30,9 +30,10 @@ class App extends React.Component {
             <PublicRoute path='/login' component={Login} />
             <PublicRoute path='/logout' component={Logout} />
 
-            <PrivateRoute path='/auth' component={Auth} logged={false} />
-            <PrivateRoute path='/home' component={Home} logged={false} />
-            <PrivateRoute path='/track/:trackID/info' component={TrackInfo} logged={false} />
+            <PublicRoute path='/auth' component={Auth} />
+
+            <PrivateRoute path='/home' component={Home} logged={true} />
+            <PrivateRoute path='/track/:trackID/info' component={TrackInfo} logged={true} />
           </Switch>
         </Router>
       </main>
