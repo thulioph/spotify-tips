@@ -3,11 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "axios": "^0.18.0",
     "chai": "^4.1.2",
     "coveralls": "^3.0.0",
     "enzyme": "^3.3.0",
     "enzyme-adapter-react-16": "^1.1.1",
     "enzyme-to-json": "^3.3.0",
+    "lodash": "^4.17.11",
     "material-ui": "^0.20.0",
     "nyc": "^11.4.1",
     "prop-types": "^15.6.0",
@@ -17,16 +19,24 @@
     "react-router-dom": "^4.2.2",
     "react-scripts": "1.0.17",
     "react-test-renderer": "^16.2.0",
+    "recompose": "^0.30.0",
     "sinon": "^4.1.4",
     "sinon-chai": "^2.14.0",
-    "spotify-wrapper-web-api": "^1.0.5"
+    "spotify-wrapper-web-api": "^1.0.5",
+    "styled-components": "^3.4.9"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
+    "test:coverage": "npm  run test -- --coverage",
     "eject": "react-scripts eject",
+    "docz:dev": "docz dev",
+    "docz:build": "docz build",
     "coveralls": "nyc npm run test -- --coverage && nyc report --reporter=text-lcov | coveralls"
   },
-  "homepage": "https://spotify-tips.herokuapp.com/"
+  "homepage": "https://spotify-tips.herokuapp.com/",
+  "devDependencies": {
+    "docz": "^0.11.2"
+  }
 }
