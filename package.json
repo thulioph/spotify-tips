@@ -4,41 +4,35 @@
   "private": true,
   "dependencies": {
     "axios": "^0.18.0",
-    "chai": "^4.1.2",
-    "coveralls": "^3.0.0",
-    "enzyme": "^3.3.0",
-    "enzyme-adapter-react-16": "^1.1.1",
-    "enzyme-to-json": "^3.3.0",
     "lodash": "^4.17.11",
-    "material-ui": "^0.20.0",
-    "nyc": "^11.4.1",
-    "prop-types": "^15.6.0",
-    "react": "^16.2.0",
-    "react-dom": "^16.2.0",
-    "react-router": "^4.2.0",
-    "react-router-dom": "^4.2.2",
-    "react-scripts": "1.0.17",
-    "react-test-renderer": "^16.2.0",
-    "reactstrap": "^6.4.0",
+    "react": "^16.5.2",
+    "react-dom": "^16.5.2",
+    "react-scripts": "2.0.5",
     "recompose": "^0.30.0",
-    "sinon": "^4.1.4",
-    "sinon-chai": "^2.14.0",
-    "spotify-wrapper-web-api": "^1.0.5",
-    "styled-components": "^3.4.9"
+    "styled-components": "^3.4.10"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "test:coverage": "npm  run test -- --coverage",
+    "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "docz:dev": "docz dev",
-    "docz:build": "docz build",
-    "coveralls": "nyc npm run test -- --coverage && nyc report --reporter=text-lcov | coveralls"
+    "storybook": "start-storybook -p 9001 -c .storybook"
   },
-  "homepage": "https://spotify-tips.herokuapp.com/",
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
   "devDependencies": {
-    "docz": "^0.11.2",
-    "docz-theme-default": "^0.11.2"
+    "@storybook/addon-actions": "^3.4.11",
+    "@storybook/addon-info": "^3.4.11",
+    "@storybook/addon-knobs": "^3.4.11",
+    "@storybook/addon-notes": "^3.4.11",
+    "@storybook/addon-options": "^3.4.11",
+    "@storybook/react": "^3.4.11"
   }
 }

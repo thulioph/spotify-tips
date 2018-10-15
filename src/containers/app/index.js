@@ -1,44 +1,28 @@
-import React from 'react';
-import { Router, Switch } from 'react-router-dom';
-import createBrowserHistory from 'history/createBrowserHistory';
+import React, { Component } from 'react';
+import logo from '../../logo.svg';
+import '../../App.css';
 
-import Login from 'containers/login';
-import Home from 'containers/home';
-import Auth from 'containers/auth';
-import Logout from 'containers/logout';
-import TrackInfo from 'containers/track-info';
-import Site from 'containers/site';
-
-import { PublicRoute, PrivateRoute } from 'routes';
-
-import Octocat from 'components/octocat';
-
-const browserHistory = createBrowserHistory();
-
-class App extends React.Component {
+class App extends Component {
   render() {
-    return(
-      <main>
-        <Octocat
-          title="Fork me on Github"
-          repoUrl="https://github.com/thulioph/spotify-tips/"
-        />
-
-        <Router history={browserHistory}>
-          <Switch>
-            <PublicRoute path='/' component={Site} exact />
-            <PublicRoute path='/login' component={Login} />
-            <PublicRoute path='/logout' component={Logout} />
-
-            <PublicRoute path='/auth' component={Auth} />
-
-            <PrivateRoute path='/home' component={Home} logged={true} />
-            <PrivateRoute path='/track/:trackID/info' component={TrackInfo} logged={true} />
-          </Switch>
-        </Router>
-      </main>
-    )
+    return (
+      <div className="App">
+        <header className="App-header">
+          <img src={logo} className="App-logo" alt="logo" />
+          <p>
+            Edit <code>src/App.js</code> and save to reload.
+          </p>
+          <a
+            className="App-link"
+            href="https://reactjs.org"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Learn React
+          </a>
+        </header>
+      </div>
+    );
   }
-};
+}
 
 export default App;
