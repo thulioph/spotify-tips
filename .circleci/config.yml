@@ -1,0 +1,51 @@
+# Javascript Node CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-javascript/ for more details
+#
+
+defaults: &npmInstall
+  name: Installing all dependencies
+  command: npm install
+
+version: 2
+jobs:
+  test:
+    working_directory: ~/spotify-tips
+    docker:
+      - image: circleci/node:10.2.1
+    steps:
+      - checkout
+      - restore_cache:
+        keys:
+        - app-v1-{{ checksum "package.json" }}
+      - run:
+        <<: *npmInstall
+      - save_cache:
+        key: app-v1-{{ checksum "package.json" }}
+        paths:
+          - node_modules
+      - run:
+        name: Running the tests
+        command: npm run test
+
+  build:
+    working_directory: ~/spotify-tips
+    docker:
+      - image: circleci/node:10.2.1
+    steps:
+      - checkout
+      - restore_cache:
+        keys:
+        - app-v2-{{ checksum "package.json" }}
+        - app-v1-{{ checksum "package.json" }}
+      - run:
+        <<: *npmInstall
+      - save_cache:
+          key: app-v2-{{ checksum "package.json" }}
+          paths:
+            - node_modules
+      - run:
+        name: Running the Build
+        command: npm run build
+
+
