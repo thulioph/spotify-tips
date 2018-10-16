@@ -8,21 +8,24 @@ defaults: &setup
     docker:
         - image: circleci/node:10.2.1
 
-defaults: &npmInstall
-    name: Installing all dependencies
-    command: npm install
+# defaults: &npmInstall
+#     name: Installing all dependencies
+#     command: npm install
 
 version: 2
 jobs:
     test-job:
-        <<: *setup
+        working_directory: ~/spotify-tips
+        docker:
+            - image: circleci/node:10.2.1
         steps:
             - checkout
             - restore_cache:
                 keys:
                     - app-dependencies-v1-{{ checksum "package.json" }}
             - run:
-                <<: *npmInstall
+                name: Installing all dependencies
+                command: npm install
             - save_cache:
                 key: app-dependencies-v1-{{ checksum "package.json" }}
                 paths:
@@ -39,7 +42,8 @@ jobs:
                     - app-dependencies-v2-{{ checksum "package.json" }}
                     - app-dependencies-v1-{{ checksum "package.json" }}
             - run:
-                <<: *npmInstall
+                name: Installing all dependencies
+                command: npm install
             - save_cache:
                 key: app-dependencies-v2-{{ checksum "package.json" }}
                 paths:
@@ -47,42 +51,42 @@ jobs:
             - run:
                 name: Build the project
                 command: npm run build
-    deploy-job:
-        <<: *setup
-        steps:
-            - checkout
-            - restore_cache:
-                keys:
-                    - app-dependencies-v2-{{ checksum "package.json" }}
-                    - app-dependencies-v1-{{ checksum "package.json" }}
-            - run:
-                <<: *npmInstall
-            - run:
-                name: Build the project
-                command: npm run build
-            - run:
-                name: Deploy to Linode
-                command: npm run deploy:circle
-    coverage-job:
-        <<: *setup
-        steps:
-            - checkout
-            - restore_cache:
-                keys:
-                    - app-dependencies-v3-{{ checksum "package.json" }}
-                    - app-dependencies-v2-{{ checksum "package.json" }}
-                    - app-dependencies-v1-{{ checksum "package.json" }}
-            - run:
-                <<: *npmInstall
-            - run:
-                name: Running the JUnit to generate the test insights
-                command: npm run test:junit
-                environment:
-                    JEST_JUNIT_OUTPUT: "reports/junit/js-test-results.xml"
-            - store_test_results:
-                path: reports/junit
-            - store_artifacts:
-                path: reports/junit
+    # deploy-job:
+    #     <<: *setup
+    #     steps:
+    #         - checkout
+    #         - restore_cache:
+    #             keys:
+    #                 - app-dependencies-v2-{{ checksum "package.json" }}
+    #                 - app-dependencies-v1-{{ checksum "package.json" }}
+    #         - run:
+    #             <<: *npmInstall
+    #         - run:
+    #             name: Build the project
+    #             command: npm run build
+    #         - run:
+    #             name: Deploy to Linode
+    #             command: npm run deploy:circle
+    # coverage-job:
+        # <<: *setup
+        # steps:
+        #     - checkout
+        #     - restore_cache:
+        #         keys:
+        #             - app-dependencies-v3-{{ checksum "package.json" }}
+        #             - app-dependencies-v2-{{ checksum "package.json" }}
+        #             - app-dependencies-v1-{{ checksum "package.json" }}
+        #     - run:
+        #         <<: *npmInstall
+        #     - run:
+        #         name: Running the JUnit to generate the test insights
+        #         command: npm run test:junit
+        #         environment:
+        #             JEST_JUNIT_OUTPUT: "reports/junit/js-test-results.xml"
+        #     - store_test_results:
+        #         path: reports/junit
+        #     - store_artifacts:
+        #         path: reports/junit
 workflows:
     version: 2
     build-deploy:
