@@ -8,16 +8,10 @@ defaults: &setup
     docker:
         - image: circleci/node:10.2.1
 
-# defaults: &npmInstall
-#     name: Installing all dependencies
-#     command: npm install
-
 version: 2
 jobs:
     test-job:
-        working_directory: ~/spotify-tips
-        docker:
-            - image: circleci/node:10.2.1
+        <<: *setup
         steps:
             - checkout
             - restore_cache:
@@ -51,42 +45,29 @@ jobs:
             - run:
                 name: Build the project
                 command: npm run build
-    # deploy-job:
-    #     <<: *setup
-    #     steps:
-    #         - checkout
-    #         - restore_cache:
-    #             keys:
-    #                 - app-dependencies-v2-{{ checksum "package.json" }}
-    #                 - app-dependencies-v1-{{ checksum "package.json" }}
-    #         - run:
-    #             <<: *npmInstall
-    #         - run:
-    #             name: Build the project
-    #             command: npm run build
-    #         - run:
-    #             name: Deploy to Linode
-    #             command: npm run deploy:circle
-    # coverage-job:
-        # <<: *setup
-        # steps:
-        #     - checkout
-        #     - restore_cache:
-        #         keys:
-        #             - app-dependencies-v3-{{ checksum "package.json" }}
-        #             - app-dependencies-v2-{{ checksum "package.json" }}
-        #             - app-dependencies-v1-{{ checksum "package.json" }}
-        #     - run:
-        #         <<: *npmInstall
-        #     - run:
-        #         name: Running the JUnit to generate the test insights
-        #         command: npm run test:junit
-        #         environment:
-        #             JEST_JUNIT_OUTPUT: "reports/junit/js-test-results.xml"
-        #     - store_test_results:
-        #         path: reports/junit
-        #     - store_artifacts:
-        #         path: reports/junit
+    coverage-job:
+        <<: *setup
+        steps:
+            - checkout
+            - restore_cache:
+                keys:
+                    - app-dependencies-v3-{{ checksum "package.json" }}
+                    - app-dependencies-v2-{{ checksum "package.json" }}
+                    - app-dependencies-v1-{{ checksum "package.json" }}
+            - run:
+                name: Installing all dependencies
+                command: npm install
+            - run:
+                name: Collecting the coverage
+                command: npm run test -- --coverage
+                environment:
+                    JUNIT_REPORT_PATH: "./coverage/"
+                    JUNIT_REPORT_NAME: clover.xml
+                when: always
+            - store_test_results:
+                path: coverage
+            - store_artifacts:
+                path: coverage
 workflows:
     version: 2
     build-deploy:
@@ -95,9 +76,6 @@ workflows:
             - build-job:
                 requires:
                     - test-job
-            # - deploy-job:
-            #     requires:
-            #         - build-job
-            # - coverage-job:
-            #     requires:
-            #         - deploy-job
+            - coverage-job:
+                requires:
+                    - build-job
