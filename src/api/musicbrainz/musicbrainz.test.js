@@ -2,13 +2,11 @@ import { MusicBrainz } from './index';
 
 describe('MusicBrainz API', () => {
   let MusicBrainzApi;
-  let spyRequest;
-  let spyArtistInfo;
+  let spyMakeUrl;
 
   beforeEach(() => {
     MusicBrainzApi = new MusicBrainz();
-    spyRequest = jest.spyOn(MusicBrainzApi, 'request');
-    spyArtistInfo = jest.spyOn(MusicBrainzApi, 'artistInfo');
+    spyMakeUrl = jest.spyOn(MusicBrainzApi, '_makeUrl');
   });
 
   test('Should have an url base when create a new instance.', () => {
@@ -23,30 +21,26 @@ describe('MusicBrainz API', () => {
     expect(MusicBrainzApi.incrementation).toEqual('aliases');
   });
 
-  test('Should return false if no url is provided.', () => {
-    const request = MusicBrainzApi.request();
-    expect(request).toBeFalsy();
-  });
-
-  test('Should return false if no mbid were provided.', () => {
-    expect(MusicBrainzApi.makeUrl()).toBeFalsy();
+  test('Should return false if no mbid were provided.', () => {;
+    expect(MusicBrainzApi._makeUrl()).toBeFalsy();
   });
 
   test('Should return the correct URL with the given mbid.', () => {
     const mbid = '123ABC';
-    const requestUrl = MusicBrainzApi.makeUrl(mbid);
+    const requestUrl = MusicBrainzApi._makeUrl(mbid);
     expect(requestUrl).toEqual(`https://musicbrainz.org/ws/2/artist/${mbid}?inc=aliases&fmt=json`);
   });
 
-  test('Should not call artistInfo if no mbid were given.', () => {
+  test('Should return false if no mbid were given.', () => {
     expect(MusicBrainzApi.artistInfo()).toBeFalsy();
-    expect(spyArtistInfo).toHaveBeenCalledTimes(1);
+
+    expect(spyMakeUrl).not.toHaveBeenCalled();
   });
 
   test('Should call artistInfo with the given mbid.', () => {
     MusicBrainzApi.artistInfo('123ABC');
 
-    expect(spyArtistInfo).toHaveBeenCalledTimes(1);
-    expect(spyArtistInfo).toHaveBeenCalledWith('123ABC');
+    expect(spyMakeUrl).toHaveBeenCalledWith('123ABC');
+    expect(spyMakeUrl).toHaveBeenCalledTimes(1);
   });
 });

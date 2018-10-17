@@ -1,4 +1,4 @@
-import axios from 'axios';
+import { requestPromise } from '../helpers';
 
 export class MusicBrainz {
 	constructor() {
@@ -7,26 +7,19 @@ export class MusicBrainz {
 		this.incrementation = 'aliases';
 	}
 
-	request(url) {
-		if (!url) return false;
-
-		return new Promise((resolve, reject) => {
-			axios.get(url).then(success => resolve(success)).catch(err => reject(err));
-		});
-	}
-
-	makeUrl(mbId = null) {
+	_makeUrl(mbId) {
 		if (!mbId) return false;
+
 		return `${this.urlBase}/${this.requestMethod}/${mbId}?inc=${this.incrementation}&fmt=json`;
 	}
 
-	artistInfo(mbId = null) {
+	artistInfo(mbId) {
 		if (!mbId) return false;
 
-		const requestUrl = this.makeUrl(mbId);
+		const requestUrl = this._makeUrl(mbId);
 
 		return new Promise((resolve, reject) => {
-				const request = this.request(requestUrl);
+			const request = requestPromise(requestUrl);
 				request.then((data) => resolve(data)).catch((err) => reject(err));
 		});
 	}
