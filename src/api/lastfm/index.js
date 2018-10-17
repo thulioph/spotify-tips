@@ -1,4 +1,4 @@
-import axios from 'axios';
+import { requestPromise } from '../helpers';
 
 export class LastFM {
   constructor({ apiKey }) {
@@ -6,14 +6,6 @@ export class LastFM {
 
     this.urlBase = 'https://ws.audioscrobbler.com/2.0';
     this.requestMethod = 'artist.getInfo';
-  }
-
-  _request(url) {
-    if (!url) return false;
-
-    return new Promise((resolve, reject) => {
-      axios.get(url).then(success => resolve(success)).catch(err => reject(err));
-    });
   }
 
   _makeUrl(artist) {
@@ -28,7 +20,7 @@ export class LastFM {
     const requestUrl = this._makeUrl(artistName);
 
     return new Promise((resolve, reject) => {
-      const request = this._request(requestUrl);
+      const request = requestPromise(requestUrl);
       request.then((data) => resolve(data)).catch((err) => reject(err));
     });
   }
