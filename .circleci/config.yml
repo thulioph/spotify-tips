@@ -1,0 +1,81 @@
+# Javascript Node CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-javascript/ for more details
+#
+
+defaults: &setup
+    working_directory: ~/spotify-tips
+    docker:
+        - image: circleci/node:10.2.1
+
+version: 2
+jobs:
+    test-job:
+        <<: *setup
+        steps:
+            - checkout
+            - restore_cache:
+                keys:
+                    - app-dependencies-v1-{{ checksum "package.json" }}
+            - run:
+                name: Installing all dependencies
+                command: npm install
+            - save_cache:
+                key: app-dependencies-v1-{{ checksum "package.json" }}
+                paths:
+                    - node_modules
+            - run:
+                name: Running the tests
+                command: npm run test
+    build-job:
+        <<: *setup
+        steps:
+            - checkout
+            - restore_cache:
+                keys:
+                    - app-dependencies-v2-{{ checksum "package.json" }}
+                    - app-dependencies-v1-{{ checksum "package.json" }}
+            - run:
+                name: Installing all dependencies
+                command: npm install
+            - save_cache:
+                key: app-dependencies-v2-{{ checksum "package.json" }}
+                paths:
+                    - node_modules
+            - run:
+                name: Build the project
+                command: npm run build
+    coverage-job:
+        <<: *setup
+        steps:
+            - checkout
+            - restore_cache:
+                keys:
+                    - app-dependencies-v3-{{ checksum "package.json" }}
+                    - app-dependencies-v2-{{ checksum "package.json" }}
+                    - app-dependencies-v1-{{ checksum "package.json" }}
+            - run:
+                name: Installing all dependencies
+                command: npm install
+            - run:
+                name: Collecting the coverage
+                command: npm run test -- --coverage
+                environment:
+                    JUNIT_REPORT_PATH: "./coverage/"
+                    JUNIT_REPORT_NAME: clover.xml
+                when: always
+            - store_test_results:
+                path: coverage
+            - store_artifacts:
+                path: coverage
+workflows:
+    version: 2
+    build-deploy:
+        jobs:
+            - test-job
+            - build-job:
+                requires:
+                    - test-job
+            - coverage-job:
+                requires:
+                    - build-job

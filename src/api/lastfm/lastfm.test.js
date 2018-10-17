@@ -11,7 +11,7 @@ describe('LastFM API', () => {
     spyMakeUrl = jest.spyOn(ApiLastFM, '_makeUrl');
   });
 
-  test('Should have an apiKey as undefined', () => {
+  test('Should not have an apiKey if nothing is passed.', () => {
     const ApiLastFM = new LastFM({});
     expect(ApiLastFM.apiKey).toBeUndefined()
   });
