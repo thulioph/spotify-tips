@@ -8,7 +8,7 @@ export class LastFM {
     this.requestMethod = 'artist.getInfo';
   }
 
-  request(url) {
+  _request(url) {
     if (!url) return false;
 
     return new Promise((resolve, reject) => {
@@ -16,7 +16,7 @@ export class LastFM {
     });
   }
 
-  makeUrl(artist) {
+  _makeUrl(artist) {
     if (!artist) return false;
 
     return `${this.urlBase}/?method=${this.requestMethod}&api_key=${this.apiKey}&artist=${encodeURI(artist)}&format=json`
@@ -25,10 +25,10 @@ export class LastFM {
   artistInfo(artistName) {
     if (!artistName) return false;
 
-    const requestUrl = this.makeUrl(artistName);
+    const requestUrl = this._makeUrl(artistName);
 
     return new Promise((resolve, reject) => {
-      const request = this.request(requestUrl);
+      const request = this._request(requestUrl);
       request.then((data) => resolve(data)).catch((err) => reject(err));
     });
   }

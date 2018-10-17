@@ -3,12 +3,12 @@ import { LastFM } from './index';
 describe('LastFM API', () => {
   let ApiLastFM;
   let spyRequest;
-  let spyArtistInfo;
+  let spyMakeUrl;
 
   beforeEach(() => {
     ApiLastFM = new LastFM({ apiKey: 'abc' });
-    spyRequest = jest.spyOn(ApiLastFM, 'request');
-    spyArtistInfo = jest.spyOn(ApiLastFM, 'artistInfo');
+    spyRequest = jest.spyOn(ApiLastFM, '_request');
+    spyMakeUrl = jest.spyOn(ApiLastFM, '_makeUrl');
   });
 
   test('Should have an apiKey as undefined', () => {
@@ -28,39 +28,39 @@ describe('LastFM API', () => {
     expect(ApiLastFM.requestMethod).toEqual('artist.getInfo');
   });
 
-  test('Should return false if no artist were given to request method.', () => {
-    const request = ApiLastFM.request();
+  // ====
+
+  test('Should return false if _request were called without an URL.', () => {
+    const request = ApiLastFM._request();
     expect(request).toBeFalsy();
   });
 
-  test('Should call the request method with the given artist.', () => {
-    ApiLastFM.request('my-request-url');
-    expect(spyRequest).toHaveBeenCalledTimes(1);
-    expect(spyRequest).toHaveBeenCalledWith('my-request-url');
-  });
-
-  test('Should return false if no artist were given for makeUrl method.', () => {
-    const URL = ApiLastFM.makeUrl();
+  test('Should return false if _makeUrl were called without an artist.', () => {
+    const URL = ApiLastFM._makeUrl();
     expect(URL).toBeFalsy();
   });
 
   test('Should return the correct URL with the given artist.', () => {
     const artist = 'kendric';
-    const requestUrl = ApiLastFM.makeUrl(artist);
+    const requestUrl = ApiLastFM._makeUrl(artist);
     expect(requestUrl).toEqual(`https://ws.audioscrobbler.com/2.0/?method=artist.getInfo&api_key=abc&artist=${artist}&format=json`);
   });
 
-  test('Should not call artistInfo if no name were given', () => {
+  test('Should return false if no artistInfo were given', () => {
     const artistInfo = ApiLastFM.artistInfo();
-
     expect(artistInfo).toBeFalsy();
-    expect(spyArtistInfo).toHaveBeenCalledTimes(1);
+
+    expect(spyMakeUrl).not.toHaveBeenCalled();
+    expect(spyRequest).not.toHaveBeenCalled();
   });
 
-  test('Should not call artistInfo if no name were given', () => {
+  test('Should call artistInfo if a name were given', () => {
     ApiLastFM.artistInfo('kendric');
 
-    expect(spyArtistInfo).toHaveBeenCalledTimes(1);
-    expect(spyArtistInfo).toHaveBeenCalledWith('kendric');
+    expect(spyMakeUrl).toHaveBeenCalledWith('kendric');
+    expect(spyMakeUrl).toHaveBeenCalledTimes(1);
+
+    expect(spyRequest).toHaveBeenCalledWith('https://ws.audioscrobbler.com/2.0/?method=artist.getInfo&api_key=abc&artist=kendric&format=json');
+    expect(spyRequest).toHaveBeenCalledTimes(1);
   });
 });
