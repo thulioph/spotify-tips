@@ -25,6 +25,13 @@ To start a development server:
 $ yarn start
 ```
 
+To run all the tests:
+
+```shell
+$ yarn test
+$ yarn test:coverage
+```
+
 To build:
 
 ```shell
