@@ -10413,6 +10413,10 @@ split-string@^3.0.1, split-string@^3.0.2:
   dependencies:
     extend-shallow "^3.0.0"
 
+spotify-wrapper-web-api@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/spotify-wrapper-web-api/-/spotify-wrapper-web-api-1.0.5.tgz#c4cb42efe4125d94efb4be1e6c4dadfe32ef020f"
+
 sprintf-js@~1.0.2:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/sprintf-js/-/sprintf-js-1.0.3.tgz#04e6926f662895354f3dd015203633b857297e2c"
