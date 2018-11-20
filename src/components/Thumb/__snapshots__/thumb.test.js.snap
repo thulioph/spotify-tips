@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Thumb component Should render the correct snapshot 1`] = `
+<div
+  className="card"
+  onClick={[MockFunction]}
+>
+  <img
+    alt="My Title"
+    className="card-img-top"
+    src="my-image.png"
+    width="100%"
+  />
+  <div
+    className="card-body"
+  >
+    <h5
+      className="card-title"
+    >
+      My Title
+    </h5>
+    <h6
+      className="card-subtitle"
+    >
+      My Subtitle
+    </h6>
+  </div>
+</div>
+`;
