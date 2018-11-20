@@ -5,6 +5,8 @@ import createBrowserHistory from 'history/createBrowserHistory';
 import HomePage from 'pages/Home';
 import LoginPage from 'pages/Login';
 
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 const browserHistory = createBrowserHistory();
 
 const App = () => {
