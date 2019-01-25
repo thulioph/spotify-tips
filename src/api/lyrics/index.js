@@ -32,7 +32,8 @@ export class Lyrics {
 
     return new Promise((resolve, reject) => {
       const request = requestPromise(URL);
-      request.then((data) => resolve(data.message.body)).catch((err) => reject(err));
+        request.then((data) => resolve(data.message.body));
+        request.catch((err) => reject(err));
     });
   }
 }

@@ -21,7 +21,8 @@ export class LastFM {
 
     return new Promise((resolve, reject) => {
       const request = requestPromise(requestUrl);
-      request.then((data) => resolve(data)).catch((err) => reject(err));
+        request.then((data) => resolve(data));
+        request.catch((err) => reject(err));
     });
   }
 }
