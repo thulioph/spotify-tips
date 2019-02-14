@@ -3,7 +3,7 @@ import { requestPromise } from '../helpers';
 export class GeniusApi {
   constructor() {
     this.urlBase = 'https://api.genius.com';
-    this.accessToken = 'ABC123';
+    this.accessToken = 'ee1vvBsNVuwdW4ElDi_mlTD9l4frg3YzhU7TLK31DkxVtNUDGPLcHqYgD-zJFQbZ';
   }
 
   makeUrlFromApiPath(apiPath) {

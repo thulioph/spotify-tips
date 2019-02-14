@@ -27,7 +27,7 @@ export class Spotify {
     if (!artistName) return false;
 
     const artistProfile = this.spotifyApi.search.artists(artistName);
-    this._request(artistProfile);
+    return this._request(artistProfile);
   }
 
   getTrackRecomendations(trackId) {
